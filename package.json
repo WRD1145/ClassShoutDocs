@@ -10,7 +10,9 @@
     "clean": "vuepress dev docs --clean-cache"
   },
   "devDependencies": {
-    "@vuepress/theme-default": "^2.0.0-rc.19",
-    "vuepress": "^2.0.0-rc.19"
+    "@vuepress/bundler-vite": "2.0.0-rc.31",
+    "@vuepress/theme-default": "2.0.0-rc.136",
+    "sass-embedded": "1.105.0",
+    "vuepress": "2.0.0-rc.31"
   }
 }

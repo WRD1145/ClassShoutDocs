@@ -1,4 +1,5 @@
 import { defineUserConfig } from 'vuepress'
+import { viteBundler } from '@vuepress/bundler-vite'
 import { defaultTheme } from '@vuepress/theme-default'
 
 export default defineUserConfig({
@@ -8,6 +9,10 @@ export default defineUserConfig({
 
   // 文档站只放源码，不在这里配部署信息 —— 要不要发到某个地址由使用它的人决定。
   base: '/',
+
+  // VuePress 2 的正式候选版不再捆绑打包器，必须自己选一个。
+  // 选 vite：构建快，默认配置就能跑，没有额外要调的 loader。
+  bundler: viteBundler(),
 
   theme: defaultTheme({
     logo: null,
