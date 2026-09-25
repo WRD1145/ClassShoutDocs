@@ -1,0 +1,12 @@
+# VuePress 构建产物与缓存 —— 仓库里只放源码
+node_modules/
+docs/.vuepress/.cache/
+docs/.vuepress/.temp/
+docs/.vuepress/dist/
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,16 @@
+{
+  "name": "classshout-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ClassShout 课堂喊话系统的文档站",
+  "type": "module",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs",
+    "clean": "vuepress dev docs --clean-cache"
+  },
+  "devDependencies": {
+    "@vuepress/theme-default": "^2.0.0-rc.19",
+    "vuepress": "^2.0.0-rc.19"
+  }
+}
