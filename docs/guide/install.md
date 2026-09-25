@@ -71,3 +71,37 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 新功能（图片、展示参数、定时、分享链接）依赖两端的新协议。
 旧版教室端**不会报错**，只是图片收不到、展示参数会退回它自己的默认值 ——
 所以升级时请把两端一起升。
+
+## 检查更新（以及 GitHub 慢的时候怎么办）
+
+教室端与教师端的设置页最后都有一张「版本与更新」：显示当前版本，
+点「检查更新」就去问一次有没有新版本；查到了可以直接打开下载地址，
+也可以打开完整的发行版页面。
+
+**GitHub 在校园网里常常慢到不能用**，所以镜像源可以自己定：
+
+| 字段 | 作用 |
+|---|---|
+| GitHub API 地址 | 查"最新的是哪一版"走这里；镜像自带 API 时填镜像的（如 `https://api.kkgithub.com`） |
+| 下载地址模板 | 把原始下载地址换成镜像地址；留空＝直连 |
+
+模板支持两个占位符，覆盖常见镜像的两种做法：
+
+- `{url}` —— 整段原始地址，用于"前缀式"镜像：`https://ghproxy.net/{url}`；
+- `{path}` —— 去掉 `https://github.com/` 之后的部分，用于"换域名式"镜像：
+  `https://kkgithub.com/{path}`。
+
+预置了几个常用的（直连 / ghproxy.net / gh-proxy.com / ghfast.top / kkgithub），
+下拉选一个就会把这两个字段一并填好；镜像挂了就换一个，或者把模板清空回到直连。
+
+> 检查**只在你按下按钮时发生**，不做后台轮询 —— 每次开应用都去外面问一次
+> "有没有新版本"，对一台放在教室里的机器没有任何必要。
+> 设置存在本机（见[配置文件一览](/reference/config-files.html)），两端各存各的。
+
+服务器的版本号在 `/api/health` 里，升级完 `curl` 一下就知道新版本部署上去了没有：
+
+```bash
+curl -s https://relay.example.com/api/health
+# {"ok":true,"service":"ClassShout.RelayServer","version":"1.9.0",...}
+```
+
