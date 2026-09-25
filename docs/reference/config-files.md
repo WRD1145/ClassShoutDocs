@@ -27,6 +27,7 @@
 | `teacher-schedule.json` | 定时喊话（待发 + 最近处理完的） | 否 |
 | `teacher-rosters.json` | 学生名单（可能有好几份） | 否 |
 | `teacher-calls.json` | 呼叫模板（组件拼装出来的那几套） | 否 |
+| `teacher-phrases.json` | 常用语（文字页那排一键填入的短语） | 否 |
 | `shout-history.json` | 最近 100 条喊话内容 | 否 |
 | `appearance.json` | 主题色 | 否 |
 | `developer.json` | 开发者模式开关（连点版本号 10 次解锁） | 否 |
