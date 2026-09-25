@@ -6,7 +6,8 @@ src/
 │  ├─ Protocol/               消息模型、JSON 编解码、分帧、展示参数与能力
 │  ├─ Net/                    TCP 服务端/客户端、UDP 发现
 │  ├─ Audio/                  PCM 工具、WAV 封装、语音转文字客户端、Edge TTS
-│  └─ Remote/                 中继契约、账号、本地设置、学生名单、呼叫模板
+│  └─ Remote/                 中继契约、账号、本地设置、学生名单、呼叫模板、
+│                             任教科目规则、服务器定时契约
 ├─ ClassShout.Design/         MD3 设计系统：令牌、控件主题、配色算法、共享控件
 ├─ ClassShout.Classroom/      教室端界面与编排
 ├─ ClassShout.Teacher/        教师端共享 UI 层（桌面与 Android 共用）

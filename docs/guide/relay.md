@@ -31,13 +31,28 @@ chmod +x ClassShout.RelayServer-linux-x64
 | 文件 | 内容 | 敏感级别 |
 |---|---|---|
 | `relay-config.json` | 管理员账号与口令（**明文**） | 中 |
-| `relay-users.json` | 老师账号（口令为 PBKDF2 哈希） | **高** |
+| `relay-users.json` | 老师账号（口令为 PBKDF2 哈希，含任教科目） | **高** |
 | `relay-state.json` | 教室注册记录 | 中 |
 | `relay-bindings.json` | 班级授权表（哪位老师可以用哪个班） | 中 |
 | `relay-shares.json` | 分享链接 | 中 |
+| `relay-schedule.json` | **老师排在服务器上的定时喊话** | **高** |
+| `relay-schedule-audio/` | 定时语音的音频（一条几十秒约 1 MB） | **高** |
 
-备份就是把这几个文件拷走。**注意文件放在哪里就要把权限收紧**：
+存放位置都可以用环境变量改到别处：`CLASSSHOUT_CONFIG`、`CLASSSHOUT_USER_STATE`、
+`CLASSSHOUT_RELAY_STATE`、`CLASSSHOUT_BINDING_STATE`、`CLASSSHOUT_SHARE_STATE`、
+`CLASSSHOUT_SCHEDULE_STATE`、`CLASSSHOUT_SCHEDULE_AUDIO`。
+另外 `CLASSSHOUT_SCHEDULE_TICK_MS` 是定时任务的检查间隔（默认 5000 毫秒）。
+
+备份就是把这些文件拷走 —— **`relay-schedule.json` 与 `relay-schedule-audio/` 别忘了**：
+漏掉它们的后果特别隐蔽，服务器起来之后一切正常，只有老师排好的那些定时悄无声息地没了，
+而老师那边以为它们还在。**注意文件放在哪里就要把权限收紧**：
 默认 `relay-config.json` 里是明文口令，同机其它账号不该读到。
+
+## 服务器定时
+
+老师登录之后排的定时任务存在服务器上，到点由服务器自己发出去 ——
+老师关掉手机、甚至关机过周末，教室里照样响。详见[定时通知](/guide/schedule.html)。
+
 
 ## 接入流程
 

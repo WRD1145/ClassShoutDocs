@@ -22,15 +22,19 @@
 
 | 文件 | 内容 | 含凭据 |
 |---|---|---|
-| `teacher.json` | 服务器地址、登录令牌、已保存的教室（**含口令**） | **是** |
+| `teacher.json` | 服务器地址、登录令牌、已保存的教室（**含口令**）、任教科目（默认 + 按班级） | **是** |
 | `teacher-display.json` | 上次用的展示参数 | 否 |
-| `teacher-schedule.json` | 定时喊话（待发 + 最近处理完的） | 否 |
+| `teacher-schedule.json` | 本机定时喊话（待发 + 最近处理完的） | 否 |
+| `schedule-audio/` | 本机定时语音的 WAV（发出去或取消之后就删掉） | 否 |
 | `teacher-rosters.json` | 学生名单（可能有好几份） | 否 |
 | `teacher-calls.json` | 呼叫模板（组件拼装出来的那几套） | 否 |
 | `teacher-phrases.json` | 常用语（文字页那排一键填入的短语） | 否 |
 | `shout-history.json` | 最近 100 条喊话内容 | 否 |
 | `appearance.json` | 主题色 | 否 |
 | `developer.json` | 开发者模式开关（连点版本号 10 次解锁） | 否 |
+
+> 任教科目存在 `teacher.json` 里只是一份**缓存**（局域网直连那条路不经过服务器，
+> 名字得由教师端自己贴），权威的那份在服务器账号上。
 
 > `teacher.json` 里有明文口令，`classroom-stt.json` 里有 API 密钥。
 > 这两个文件是"这台设备被拿走就等于这些凭据也一起被拿走"的那一类 ——
