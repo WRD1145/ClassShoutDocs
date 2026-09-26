@@ -58,7 +58,7 @@ export const enSidebar = sidebar({
       text: "Community",
       icon: "fa-solid fa-comments",
       collapsible: false,
-      children: ["README.md", "question.md", "contributing.md", "promotion.md"],
+      children: ["README.md", "aibot.md", "question.md", "contributing.md", "promotion.md"],
     },
   ],
 });

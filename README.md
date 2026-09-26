@@ -54,6 +54,28 @@ src/
 侧边栏分组是显式列出的（`sidebar/*.ts`）。新增一页时要在那里登记，
 否则它不会出现在侧栏里 —— 顺手也能防止出现"写了但没人找得到"的页面。
 
+## 装了哪些 hope 插件
+
+主题自带的那些（搜索都用本地索引、复制代码、图片预览、阅读时间、SEO、sitemap、RTL…）开箱即用；
+另外这些"可选插件"也装在 `package.json` 里：
+
+| 插件 | 状态 | 说明 |
+|---|---|---|
+| `@vuepress/plugin-slimsearch` | 开 | 搜索。本地索引，不需要任何外部服务 |
+| `@vuepress/plugin-feed` | 开 | RSS / Atom / JSON，中英各一份：`/rss.xml` 与 `/en/rss.xml` 等 |
+| `@vuepress/plugin-pwa` | 开 | 可"添加到主屏幕"，断网也能翻看过的页；`config.ts` 里关了预取 |
+| `@vuepress/plugin-notice` | 开 | 首次进站弹一次"本站中英双语"的公告。**每条公告必须给 `path` 或 `match`**，否则它一条都不匹配、页面上什么都不出现 |
+| `@vuepress/plugin-watermark` | 开 | 页面浅色水印（`docs.wrd1145.top`），截图外传时能看出出处 |
+| `@vuepress/plugin-revealjs` | 开 | Markdown 幻灯片（`markdown.revealjs`） |
+| `@vuepress/plugin-catalog` | 开 | 目录页。本站每个目录都有 `README.md`，所以它暂时无事可做 |
+| `@vuepress/plugin-copyright` | 开 | 复制正文超过 100 字时自动附上出处与协议 |
+| `@vuepress/plugin-docsearch`、`@vuepress/plugin-meilisearch` | 装但不开 | 要 Algolia / Meilisearch 的账号与 Key，没有凭据就开会把搜索框弄坏 |
+| `@vuepress/plugin-search`、`@vuepress/plugin-prismjs` | 装但不开 | 与 slimsearch、shiki 功能重叠，同时开只会打架 |
+| `@vuepress/shiki-twoslash` | 装但不开 | 只对 TypeScript 代码块有意义，本项目的示例是 C# / PowerShell / bash |
+
+> 公告与水印在 `config.ts` 里**显式 import 插件并手动调用**：主题认得这两个选项，
+> 但走主题选项那条路时构建不报错、页面上却什么都不出现。
+
 ## 部署
 
 - `.github/workflows/deploy-docs.yml`：推送到 `main` 时用 pnpm 构建，再通过 rsync 发布到服务器，
