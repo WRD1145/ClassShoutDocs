@@ -1,3 +1,5 @@
 # 宣传
+
 ## 群宣传片（？）
-!![视频链接](https://docs.wrd1145.dev/mv.mp4)!!
+
+[在 Bilibili 上观看](https://www.bilibili.com/video/BV1GJ411x7h7)
