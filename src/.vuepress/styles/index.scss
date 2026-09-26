@@ -1,0 +1,15 @@
+// place your custom styles here
+//
+// 首页的徽标（logo.png）是横版字标，宽度远大于高度，直接当 hero 会占掉半屏，
+// 所以在首页把它按宽度收一下（heroImageStyle 里也设了，这里兜一层）。
+.vp-hero-image {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+// 侧边栏分组标题里的图标与文字对齐一点
+.vp-sidebar-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}

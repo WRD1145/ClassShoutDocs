@@ -1,8 +1,16 @@
 # VuePress 构建产物与缓存 —— 仓库里只放源码
+# 页面目录从 docs/ 换成了 src/（与 docs.wrd1145.top 那套站点一致），
+# 所以这几条也跟着改；旧的 docs/ 那几条留着不管用，删掉了。
 node_modules/
-docs/.vuepress/.cache/
-docs/.vuepress/.temp/
-docs/.vuepress/dist/
+src/.vuepress/.cache/
+src/.vuepress/.temp/
+src/.vuepress/dist/
+
+# PDF 导出产物
+pdf/
+
+# 本地校验用的截图与临时脚本，不进版本控制
+artifacts/
 
 # 编辑器与系统
 .vscode/

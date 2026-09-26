@@ -1,27 +1,26 @@
 ---
 home: true
+icon: home
+title: 首页
 heroText: ClassShout
 tagline: 手机说一句，教室那块屏上就能听见、看见
+heroImage: /logo.png
+heroImageDark: /logo-dark.png
+heroImageStyle:
+  maxWidth: "320px"
+  margin: "0 auto"
 actions:
   - text: 快速开始
+    icon: lightbulb
     link: /guide/install.html
     type: primary
   - text: 功能一览
     link: /guide/
-    type: secondary
-features:
-  - title: 教室端 + 教师端 + 中继服务器
-    details: 教室里那台电脑负责出声出画面，老师手机上只管发；跨网络时接一台中继服务器即可。
-  - title: 文字、语音、图片
-    details: 文字走教室的 TTS 朗读，语音实时流过去，图片可以连同一句说明一起发。
-  - title: 每条喊话自己决定怎么显示
-    details: 窗口还是弹窗、字号多大、停多久、要不要朗读 —— 跟着每一条走，不搞一刀切。
-  - title: 一次发给多个班
-    details: 教好几个班的老师可以勾选几个班一起发，不必一间一间来。
-  - title: 学生名单与快速呼叫
-    details: 导入名单，用组件拼出要喊的话，选好学生一次叫出去。
-  - title: 与 ClassIsland 联动
-    details: 教室那台电脑上挂着 ClassIsland 时，喊话可以走它的提醒通道，观感统一。
+  - text: 社区
+    link: /community/
+  - text: GitHub
+    icon: fa-brands fa-github
+    link: https://github.com/WRD1145/ClassShout
 footer: 本项目的源码按 GPL v3 提供
 ---
 
@@ -41,6 +40,35 @@ footer: 本项目的源码按 GPL v3 提供
 
 同一个局域网里，教室端与教师端**不需要服务器**也能用 —— 教师端会自动发现同一网段里的教室。
 只有跨网络（老师在家里、教室在学校）时才需要部署中继服务器。
+
+## 目录
+
+<div class="vp-card-container">
+  <VPCard
+    title="指南"
+    desc="打包、部署、跑通第一间教室；文字 / 语音 / 图片怎么发，显示成什么样，怎么定时发"
+    logo="/logo-192.png"
+    link="/guide/"
+  />
+  <VPCard
+    title="参考"
+    desc="通信协议、配置文件与各项默认值、排错时先看哪一眼"
+    logo="/logo-192.png"
+    link="/reference/"
+  />
+  <VPCard
+    title="开发"
+    desc="代码结构与分层、怎么构建与打包、改动之后怎么验证"
+    logo="/logo-192.png"
+    link="/dev/"
+  />
+  <VPCard
+    title="社区"
+    desc="社区规范、提问求助、贡献指南与宣传页"
+    logo="/logo-192.png"
+    link="/community/"
+  />
+</div>
 
 ## 从哪看起
 

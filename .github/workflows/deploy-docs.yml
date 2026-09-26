@@ -1,0 +1,85 @@
+name: 部署文档
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    
+    concurrency:
+      group: "web-deploy"
+      cancel-in-progress: false
+    environment:
+      name: wrd1145-web
+    name: "Build & Deploy"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # 如果你文档需要 Git 子模块，取消注释下一行
+          submodules: true
+
+      - name: 设置 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1
+
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装依赖
+        run: |
+          corepack prepare pnpm@9.9.0 --activate
+          pnpm install --frozen-lockfile
+
+      - name: 构建文档
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: |-
+          pnpm run docs:build
+
+      - name: Deploy
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_WEB_PRIVATEKEY }}
+          # 复制操作的参数。"-avzr --delete"意味部署时清空服务器目标目录下的文件
+          ARGS: "-avz --delete --no-times --no-perms"
+          # 源目录
+          SOURCE: "./src/.vuepress/dist/"
+          # 部署目标主机
+          REMOTE_HOST: ${{ secrets.DEPLOY_WEB_IP }}
+          # 部署目标主机端口
+          REMOTE_PORT: ${{ secrets.DEPLOY_WEB_PORT }}
+          # 登录用户
+          REMOTE_USER: ${{ secrets.DEPLOY_WEB_USERNAME }}
+          # 部署目标目录
+          TARGET: ${{ secrets.DEPLOY_WEB_TARGET }}
+
+      - name: 提交 IndexNow
+        uses: bojieyang/indexnow-action@v1
+        with:
+          # 站点自己的 sitemap —— 原模板里那行指向 docs.wrd1145.dev，是别人的域名
+          sitemap-location: "https://docs.wrd1145.top/sitemap.xml"
+          endpoint: "www.bing.com"
+          since: 1
+          # minite, hour, day, week, month, year
+          since-unit: "day"
+          limit: 100
+          key: ${{ secrets.INDEXNOW_KEY }}
+          key-location: ${{ secrets.INDEXNOW_KEY_LOCATION }}
+  
