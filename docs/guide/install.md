@@ -24,23 +24,28 @@ pwsh -File scripts/pack.ps1 -IncludeLinuxServer
 
 ## 部署教室端
 
-1. 把 `ClassShout.Classroom.exe` 拷到教室电脑上一个固定目录，例如 `C:\ClassShout\`。
+1. 把 `ClassShout.Classroom-win-x64.zip` 解压到一个固定目录，例如 `C:\ClassShout\`
+   （解压出来是 `ClassShout.Classroom\` 一层目录，入口是里面的 `ClassShout.Classroom.exe`）。
+   **整个目录一起留着**：依赖文件就在它旁边，别只把 exe 拷走。
 2. 双击运行。首次启动 Windows 可能弹防火墙提示，**要勾选「专用网络」并允许** ——
    局域网模式下教师端需要连进来（TCP 45900）并靠 UDP 45901 被发现。
 3. 在界面右侧填**教室名**（例如「三年二班」），它会出现在教师端列表、弹窗和服务器控制台上。
 
+> **1.10.0 起不再打成单文件**：单文件每次启动都要把 Skia 这类原生库解压到临时目录，
+> 首次启动明显变慢。现在升级 = 把新压缩包**解压覆盖同一个目录**。
+
 教室端的配置不在 exe 旁边，而在当前 Windows 账户的用户目录里（`%LOCALAPPDATA%\ClassShout\`）。
 这是有意为之：程序可能被装在只读位置，而且同一台机器上不同账户应当有各自独立的教室身份。
-文件的清单见 [配置文件一览](/reference/config-files.html)。
+文件的清单见 [配置文件一览](/reference/config-files.html)；运行日志也在那儿（按天一个文件、留 7 天）。
 
 **设为开机自启**：教室端 → 设置 → 「后台运行」→ 开机自启。打开后会在启动文件夹里放一个快捷方式。
 
 命令行也能设，教室那台机器不方便点界面时用得上：
 
 ```powershell
-.\ClassShout.Classroom.exe --autostart-on       # 开启
-.\ClassShout.Classroom.exe --autostart-off      # 关闭
-.\ClassShout.Classroom.exe --autostart-status   # 查状态
+.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-on       # 开启
+.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-off      # 关闭
+.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-status   # 查状态
 ```
 
 > 需要「无人登录也能跑」或「以最高权限运行」时仍要用**计划任务**（启动文件夹做不到这两点）。
@@ -56,15 +61,16 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 
 首次启动会申请麦克风权限（语音喊话要用）。拒绝也不影响文字与图片喊话。
 
-**Windows**：直接双击 `ClassShout.Teacher.Desktop.exe`。
+**Windows**：把 `ClassShout.Teacher-win-x64.zip` 解压到固定目录，双击里面的
+`ClassShout.Teacher.Desktop.exe`。**Android 版与 Windows 版都在这一张卡片里** ——
+检查更新时会按你运行的平台挑对应的附件（手机挑 `.apk`、桌面挑那个 zip）。
 
 ## 部署中继服务器
 
-只在老师的手机与教室不在同一个网络时才需要。最少做法是把 `ClassShout.RelayServer-linux-x64`
-（或 Windows 版）拷到服务器上跑起来，然后两端都填上它的地址。
-
-它首次启动会生成 `relay-config.json`，里面有管理员账号与随机口令，
-控制台要用它登录。完整流程见 [中继服务器](/guide/relay.html)。
+只在老师的手机与教室不在同一个网络时才需要。把 `ClassShout.RelayServer-linux-x64.tar.gz`
+（或 Windows 版）解压到服务器上跑起来，然后两端都填上它的地址。完整流程见
+[中继服务器](/guide/relay.html) —— 那里有两个 Linux 上必踩的坑：**解压后要
+`chmod +x`**（Windows 打的 tar 不保留可执行位），以及**状态文件路径要显式指定**。
 
 ## 三个组件都要升级
 
@@ -72,27 +78,34 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 旧版教室端**不会报错**，只是图片收不到、展示参数会退回它自己的默认值 ——
 所以升级时请把两端一起升。
 
+> **1.10.0 起产物形式变了**：不再是单个 exe，而是压缩包（解压出"应用名/"一层目录）。
+> 升级方式跟着变成"解压覆盖同一个目录"。配置与日志都在用户目录里，
+> 从来不在程序旁边，所以升级不影响教室名、UUID、口令与账号。
+
 ## 检查更新（以及 GitHub 慢的时候怎么办）
 
 教室端与教师端的设置页最后都有一张「版本与更新」：显示当前版本，
 点「检查更新」就去问一次有没有新版本；查到了可以直接打开下载地址，
 也可以打开完整的发行版页面。
 
-**GitHub 在校园网里常常慢到不能用**，所以镜像源可以自己定：
+**GitHub 在校园网里常常慢到不能用**，所以镜像源是一份可以增删的列表，
+内置了六条：
 
-| 字段 | 作用 |
+| 内置镜像 | 走哪套接口 |
 |---|---|
-| GitHub API 地址 | 查"最新的是哪一版"走这里；镜像自带 API 时填镜像的（如 `https://api.kkgithub.com`） |
-| 下载地址模板 | 把原始下载地址换成镜像地址；留空＝直连 |
+| 直连 GitHub | `api.github.com` |
+| **Gitee 码云（li-hansen136）** | `gitee.com/api/v5`，仓库是码云上那份镜像 |
+| ghproxy.net / gh-proxy.com / ghfast.top | GitHub 的 API + 下载地址走代理前缀 |
+| kkgithub | `api.kkgithub.com` + 域名替换 |
 
-模板支持两个占位符，覆盖常见镜像的两种做法：
+点「一键检测全部镜像」会**并发**把每条都测一遍（六条约 200 毫秒全部回来，
+而不是一条一条等），列出通不通、耗时、查到的最新版本，并自动切到最快的那条。
+每条也能自己加（名字 / GitHub 还是 Gitee / API 地址 / 仓库 / 下载模板）、自己删；
+内置的删不掉 —— 它们是"一条都不剩"时的兜底。
 
-- `{url}` —— 整段原始地址，用于"前缀式"镜像：`https://ghproxy.net/{url}`；
-- `{path}` —— 去掉 `https://github.com/` 之后的部分，用于"换域名式"镜像：
-  `https://kkgithub.com/{path}`。
-
-预置了几个常用的（直连 / ghproxy.net / gh-proxy.com / ghfast.top / kkgithub），
-下拉选一个就会把这两个字段一并填好；镜像挂了就换一个，或者把模板清空回到直连。
+**连不上多半是代理的问题**，所以代理是显式的一档：跟随系统 / 不使用 / 自己填地址。
+界面下方会显示**实际解析出来的代理**（「系统代理 → http://127.0.0.1:7890」
+或「系统没有配置代理（直连）」）—— 一眼能看出是系统代理没读到，还是地址填错了。
 
 > 检查**只在你按下按钮时发生**，不做后台轮询 —— 每次开应用都去外面问一次
 > "有没有新版本"，对一台放在教室里的机器没有任何必要。

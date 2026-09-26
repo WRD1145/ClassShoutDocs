@@ -10,23 +10,36 @@
 
 ## 部署
 
-服务器是一个自包含的单文件程序，Windows 与 Linux 都有发布物。最小做法：
+服务器是自包含的（Windows 与 Linux 都有发布物，**1.10.0 起是压缩包而不是单个文件**）。
+最小做法：
 
 ```bash
-# Linux
-chmod +x ClassShout.RelayServer-linux-x64
-./ClassShout.RelayServer-linux-x64 --urls "http://0.0.0.0:8080"
+# Linux：解压到一个固定目录
+sudo mkdir -p /opt/classshout/app
+sudo tar -xzf ClassShout.RelayServer-linux-x64.tar.gz -C /opt/classshout/app
+
+# ⚠ Windows 上打的 tar 不保留 Unix 权限位，解压出来的可执行文件是 0666。
+#   不补这一步，systemd 会报 status=203/EXEC（Permission denied）。
+sudo chmod +x /opt/classshout/app/ClassShout.RelayServer/ClassShout.RelayServer
+
+cd /opt/classshout
+./app/ClassShout.RelayServer/ClassShout.RelayServer --urls "http://0.0.0.0:8080"
 ```
 
-首次启动会在程序目录生成 `relay-config.json`，里面是管理员账号与随机口令 ——
+首次启动会在**当前工作目录**生成 `relay-config.json`，里面是管理员账号与随机口令 ——
 控制台登录要用它。**它同时写在启动日志里**，忘了口令就去这两个地方找。
+
+> 想升级时只覆盖 `app/`：状态文件留在外面（见下），程序与数据谁也不动谁。
+> 服务端默认按"程序所在目录"找状态文件，所以把程序放进子目录之后，
+> 要在 systemd 单元里用环境变量显式指定状态路径（见[状态文件](#状态文件)），
+> 否则启动自检会以 `status=78` 拒绝启动，并在日志里写明是哪一项不可用。
 
 > 生产环境建议放在反向代理后面（Caddy / Nginx）并配 HTTPS ——
 > 中继上跑的是老师的账号与喊话内容。
 
 ## 状态文件
 
-服务器把状态放在程序目录（可用环境变量改到别处）：
+服务器把状态放在程序目录（可用环境变量改到别处；**程序放进子目录时一定要显式指定**）：
 
 | 文件 | 内容 | 敏感级别 |
 |---|---|---|
