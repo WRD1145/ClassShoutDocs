@@ -19,6 +19,25 @@ tools/
 └─ ClassShout.DesignPreview/  渲染校验（把真实界面导出成 PNG）
 ```
 
+## 发布产物的布局
+
+每个应用打成一个压缩包，解压出来是固定的四样东西：
+
+```
+ClassShout.Classroom/
+├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Linux 是 run.sh）
+├─ 使用说明.txt
+├─ logs/                                ← 运行日志
+└─ app/                                 ← 程序本体（exe 与全部依赖）
+```
+
+程序本体放进 `app/` 不是为了好看，而是**DLL 没法再单独分一个目录**：
+.NET 的运行时宿主文件（`hostpolicy.dll` / `hostfxr.dll` / `coreclr.dll` /
+`System.Private.CoreLib.dll` …）必须与 exe 同级，而它们占了文件数的一大半。
+试过把其余程序集挪进 `lib\` 再改写 `deps.json` 里 `targets` 段的路径，
+应用直接崩在 `hostpolicy.dll not found`。所以能收拾的是界面那一层。
+启动脚本除了转发参数，还会把 `CLASSSHOUT_LOG_DIR` 指到同级的 `logs/`。
+
 ## 分层原则
 
 - **Core 不依赖 Avalonia**。协议、音频工具、配置读写这些与界面无关的东西一放进去，

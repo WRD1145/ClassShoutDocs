@@ -14,20 +14,22 @@
 最小做法：
 
 ```bash
-# Linux：解压到一个固定目录
-sudo mkdir -p /opt/classshout/app
-sudo tar -xzf ClassShout.RelayServer-linux-x64.tar.gz -C /opt/classshout/app
+# Linux：解压到 /opt/classshout，--strip-components=1 去掉压缩包里那层目录，
+# 让 app/ 与 logs/ 直接落在 /opt/classshout 下
+sudo mkdir -p /opt/classshout
+sudo tar -xzf ClassShout.RelayServer-linux-x64.tar.gz -C /opt/classshout --strip-components=1
 
 # ⚠ Windows 上打的 tar 不保留 Unix 权限位，解压出来的可执行文件是 0666。
 #   不补这一步，systemd 会报 status=203/EXEC（Permission denied）。
-sudo chmod +x /opt/classshout/app/ClassShout.RelayServer/ClassShout.RelayServer
+sudo chmod +x /opt/classshout/app/ClassShout.RelayServer /opt/classshout/run.sh
 
 cd /opt/classshout
-./app/ClassShout.RelayServer/ClassShout.RelayServer --urls "http://0.0.0.0:8080"
+./run.sh --urls "http://0.0.0.0:8080"     # 或直接 ./app/ClassShout.RelayServer
 ```
 
 首次启动会在**当前工作目录**生成 `relay-config.json`，里面是管理员账号与随机口令 ——
 控制台登录要用它。**它同时写在启动日志里**，忘了口令就去这两个地方找。
+日志在 `logs/`（`run.sh` 会把 `CLASSSHOUT_LOG_DIR` 指到同级目录）。
 
 > 想升级时只覆盖 `app/`：状态文件留在外面（见下），程序与数据谁也不动谁。
 > 服务端默认按"程序所在目录"找状态文件，所以把程序放进子目录之后，

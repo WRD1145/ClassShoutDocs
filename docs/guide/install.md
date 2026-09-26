@@ -24,28 +24,47 @@ pwsh -File scripts/pack.ps1 -IncludeLinuxServer
 
 ## 部署教室端
 
-1. 把 `ClassShout.Classroom-win-x64.zip` 解压到一个固定目录，例如 `C:\ClassShout\`
-   （解压出来是 `ClassShout.Classroom\` 一层目录，入口是里面的 `ClassShout.Classroom.exe`）。
-   **整个目录一起留着**：依赖文件就在它旁边，别只把 exe 拷走。
-2. 双击运行。首次启动 Windows 可能弹防火墙提示，**要勾选「专用网络」并允许** ——
+1. 把 `ClassShout.Classroom-win-x64.zip` 解压到一个固定目录，例如 `C:\ClassShout\`，
+   双击里面的**「ClassShout.Classroom.exe 启动.cmd」**即可。
+2. 首次启动 Windows 可能弹防火墙提示，**要勾选「专用网络」并允许** ——
    局域网模式下教师端需要连进来（TCP 45900）并靠 UDP 45901 被发现。
 3. 在界面右侧填**教室名**（例如「三年二班」），它会出现在教师端列表、弹窗和服务器控制台上。
 
-> **1.10.0 起不再打成单文件**：单文件每次启动都要把 Skia 这类原生库解压到临时目录，
-> 首次启动明显变慢。现在升级 = 把新压缩包**解压覆盖同一个目录**。
+解压出来的样子（每个应用都一样）：
 
-教室端的配置不在 exe 旁边，而在当前 Windows 账户的用户目录里（`%LOCALAPPDATA%\ClassShout\`）。
-这是有意为之：程序可能被装在只读位置，而且同一台机器上不同账户应当有各自独立的教室身份。
-文件的清单见 [配置文件一览](/reference/config-files.html)；运行日志也在那儿（按天一个文件、留 7 天）。
+```
+ClassShout.Classroom/
+├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Windows）
+├─ run.sh                               ← Linux 下跑这个
+├─ 使用说明.txt
+├─ logs/                                ← 运行日志落在这里
+└─ app/                                 ← 程序本体（exe 与全部依赖）
+```
+
+**为什么程序本体在 `app\` 里、DLL 不能单独再分一个文件夹**：
+.NET 的运行时宿主文件（`hostpolicy.dll` / `hostfxr.dll` / `coreclr.dll` /
+`System.Private.CoreLib.dll` …）**必须与 exe 同级**，而它们占了文件数的一大半；
+把其余程序集挪进 `lib\` 再改写 `deps.json` 会让应用直接崩在
+`hostpolicy.dll not found`（实测过）。所以能收拾的是**界面**：顶层只有启动脚本、
+说明和 `logs\`，两百多个程序文件全部待在 `app\` 里。
+
+教室端的数据（教室名、UUID、口令、账号、主题色）不在程序旁边，而在当前 Windows
+账户的用户目录里（`%LOCALAPPDATA%\ClassShout\`）。这是有意为之：程序可能被装在
+只读位置，而且同一台机器上不同账户应当有各自独立的教室身份。
+文件的清单见 [配置文件一览](/reference/config-files.html)。
+
+**运行日志写在软件目录下的 `logs\`**（不是 AppData）—— 按天一个文件、只留 7 天。
+装在只读位置时会逐级退到 `CLASSSHOUT_LOG_DIR` 指定的目录、再退到用户数据目录，
+退到哪一级会显示在设置页的「关于」里。
 
 **设为开机自启**：教室端 → 设置 → 「后台运行」→ 开机自启。打开后会在启动文件夹里放一个快捷方式。
 
 命令行也能设，教室那台机器不方便点界面时用得上：
 
 ```powershell
-.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-on       # 开启
-.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-off      # 关闭
-.\ClassShout.Classroom\ClassShout.Classroom.exe --autostart-status   # 查状态
+.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-on       # 开启
+.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-off      # 关闭
+.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-status   # 查状态
 ```
 
 > 需要「无人登录也能跑」或「以最高权限运行」时仍要用**计划任务**（启动文件夹做不到这两点）。
@@ -78,9 +97,9 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 旧版教室端**不会报错**，只是图片收不到、展示参数会退回它自己的默认值 ——
 所以升级时请把两端一起升。
 
-> **1.10.0 起产物形式变了**：不再是单个 exe，而是压缩包（解压出"应用名/"一层目录）。
-> 升级方式跟着变成"解压覆盖同一个目录"。配置与日志都在用户目录里，
-> 从来不在程序旁边，所以升级不影响教室名、UUID、口令与账号。
+> **1.10.0 起产物形式变了**：不再是单个 exe，而是压缩包（解压出 `app/` + `logs/` +
+> 启动脚本）。升级方式跟着变成"解压覆盖同一个目录"，还是双击那个启动脚本。
+> 配置都在用户目录里，日志在软件目录下的 `logs/`，覆盖不会丢东西。
 
 ## 检查更新（以及 GitHub 慢的时候怎么办）
 
