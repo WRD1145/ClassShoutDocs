@@ -35,6 +35,7 @@ machine should have their own separate identities.
 | `appearance.json` | Theme color | No |
 | `developer.json` | The developer mode switch (unlocked by tapping the version number 10 times in a row) | No |
 | `update.json` | Check-for-updates settings (mirror list, proxy, the result of the last check) | No |
+| `log.json` | Log verbosity (**both apps share the same format**, see below) | No |
 
 ## Runtime logs
 
@@ -54,6 +55,31 @@ on is shown under "About" on the settings page:
 | File | Contents |
 |---|---|
 | `logs/classshout-2026-09-26.log` | That day's runtime log (what you see in the UI is written here as well) |
+
+Each line carries its level and source: `2026-09-26 19:14:09 [信息 网络] 已连上教室`.
+
+### Verbosity (`log.json`)
+
+Both apps have a level dropdown on their runtime-log card. Changing it takes effect and is
+saved to `log.json` immediately:
+
+| Level | What gets logged |
+|---|---|
+| `Trace` | Every broadcast, every frame sent and received — the most detailed, and the log grows fast |
+| `Debug` | The details of connecting, discovery and retries. **This is the level to use when investigating "the scan finds no classroom" or "did this one actually go out?"** |
+| `Info` (default) | Normal operations and their results |
+| `Warning` | Warnings and errors only |
+| `Error` | Errors only |
+
+Anything below the selected level is **neither shown in the UI nor written to disk**.
+An unrecognised level falls back to `Info` — a corrupted setting should not make the logs
+disappear entirely.
+
+> Why the switch exists: at the default level you cannot see "which address the broadcast
+> went to and who answered", and that is the whole set of clues for connectivity problems —
+> but recording all of it all the time turns the log into a running commentary.
+> The server's log uses the environment variable `CLASSSHOUT_LOG_LEVEL` for the same set of
+> levels (see [Relay server](/en/guide/relay.html)).
 
 > The subjects taught stored in `teacher.json` are only a **cache** (the direct-over-LAN path
 > does not go through the server, so the teacher app has to supply the name itself); the
