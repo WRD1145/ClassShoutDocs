@@ -2,14 +2,14 @@
 
 !!Wel↓come↑→～!!
 
-> [!note] Scope
-> These rules apply to any document that references them.
+> [!note]
+> **Scope**: these rules apply to any document that references them.
 
-> [!caution] Read them first
-> Before you take part in the community, be sure to read the community rules in full. Moderators do not accept any appeal on grounds such as "I did not read these rules", and appealing for such a reason may **make your penalty heavier**.
+> [!caution]
+> **Read them first**: before you take part in the community, be sure to read the community rules in full. Moderators do not accept any appeal on grounds such as "I did not read these rules", and appealing for such a reason may **make your penalty heavier**.
 
-> [!tip] Sources
-> Parts of these rules reference the [ClassIsland community rules document](https://docs.classisland.tech/community/rules.html).
+> [!tip]
+> **Sources**: parts of these rules reference the [ClassIsland community rules document](https://docs.classisland.tech/community/rules.html).
 
 ## 1. Purpose of the group
 

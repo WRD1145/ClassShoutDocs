@@ -27,10 +27,15 @@ mermaid / echarts / flowchart 图、VPCard 卡片…）也照那套开着；社�
 ```bash
 corepack enable            # 或者直接用 npx pnpm@9.9.0
 pnpm install --frozen-lockfile
+pnpm check                 # 内容自检（提示框语法、中英成对、侧边栏与站内链接）
 pnpm docs:dev              # 起在 http://localhost:8080
 pnpm docs:build            # 产物在 src/.vuepress/dist
 pnpm export-pdf            # 导出 PDF 到 pdf/（用 Puppeteer，缺 Chrome 会自动下载）
 ```
+
+`pnpm check` 与 CI 里那道「内容自检」是同一个脚本（`scripts/check-content.mjs`）。
+它守的是**构建不报错、页面上却是坏的**那一类问题，比如提示框写成 `> [!note] 标题`
+（标记后面跟了字就不被识别，页面上直接显示字面量），或者只改了中文页忘了改英文页。
 
 ## 目录结构
 

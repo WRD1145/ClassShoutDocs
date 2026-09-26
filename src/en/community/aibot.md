@@ -6,8 +6,8 @@ icon: robot
 
 The bot in this group is a **QQ chat bot** built on the [MaiBot](https://docs.mai-mai.org/manual/) ("Maimai") framework: it is driven by a large language model and joins the conversation much like a person would — it keeps track of the context, and its answers are **generated on the spot**, not looked up in some prepared document.
 
-> [!important] The short version
-> **No more than 3 manual calls within one minute**; keep personal information away from it; what it says is not the group owner's or a moderator's position.
+> [!important]
+> **The short version**: **no more than 3 manual calls within one minute**; keep personal information away from it; what it says is not the group owner's or a moderator's position.
 
 ## How to call it
 

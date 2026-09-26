@@ -47,6 +47,11 @@ jobs:
           corepack prepare pnpm@9.9.0 --activate
           pnpm install --frozen-lockfile
 
+      - name: 内容自检
+        # 提示框语法、中英页面是否成对且结构一致、侧边栏与站内链接能不能落到真实页面。
+        # 这些错误构建时一条都不会报，只有打开页面才看得见，所以放在构建前面挡一道。
+        run: pnpm run check
+
       - name: 构建文档
         env:
           NODE_OPTIONS: --max_old_space_size=8192
