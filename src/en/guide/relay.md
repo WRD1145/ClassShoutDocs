@@ -62,11 +62,13 @@ The server keeps its state in the app folder (environment variables can move it 
 | `relay-shares.json` | Share links | Medium |
 | `relay-schedule.json` | **Scheduled shouts a teacher has queued on the server** | **High** |
 | `relay-schedule-audio/` | Audio for scheduled voice shouts (a few tens of seconds is about 1 MB) | **High** |
+| `relay-rosters.json` | The **rosters and call templates** teachers sync up (this is what web calling uses) | **High** (student names and IDs) |
 
 Every one of those locations can be moved elsewhere with an environment variable: `CLASSSHOUT_CONFIG`, `CLASSSHOUT_USER_STATE`,
 `CLASSSHOUT_RELAY_STATE`, `CLASSSHOUT_BINDING_STATE`, `CLASSSHOUT_SHARE_STATE`,
-`CLASSSHOUT_SCHEDULE_STATE`, `CLASSSHOUT_SCHEDULE_AUDIO`.
-`CLASSSHOUT_SCHEDULE_TICK_MS` is the check interval for scheduled jobs (5000 milliseconds by default).
+`CLASSSHOUT_SCHEDULE_STATE`, `CLASSSHOUT_SCHEDULE_AUDIO`, `CLASSSHOUT_ROSTER_STATE`.
+`CLASSSHOUT_SCHEDULE_TICK_MS` is the check interval for scheduled jobs (5000 milliseconds by default), and
+`CLASSSHOUT_LOG_LEVEL` sets the verbosity of the log files (Trace / Debug / Info / Warning / Error, Info by default).
 
 Backup means copying these files away — **don't forget `relay-schedule.json` and `relay-schedule-audio/`**:
 missing them is a particularly sneaky failure — the server comes up and everything looks fine, only the schedules the teacher set up disappear

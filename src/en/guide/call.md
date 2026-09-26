@@ -45,3 +45,27 @@ than quietly drop the components the teacher just dragged in.
 
 The display parameters for what gets sent (window/pop-up, font size, dwell time, read aloud) are the same set as the ones currently on the "Text" page —
 we deliberately don't keep a second set, otherwise the same app would send out different font sizes depending on which of the two routes you used.
+
+## Calling from the web
+
+Once you're signed in to your server account, open the server address in a browser: the
+**teacher view has a "Call" (呼叫) section** too — pick a template, tick the students, press
+"preview what will be shouted" to take a look, then press "send the call".
+
+Its rules are the same as the app's — because both sides run the **same composition code**
+(component order, spacing, group merging and the subject in the source name all match),
+rather than one being a rewrite of the other.
+
+What that needs is the roster being on the server, and the roster normally only lives on the
+teacher's own device, so sync it once before the first use:
+
+> The app's "Roster" page → the button at the bottom, "sync the roster to the server (for web calling)".
+> It syncs **the roster you're currently on** plus every call template; after you change the
+> roster, just press it again.
+
+- When nothing has been synced yet, that part of the page says to go and sync in the app,
+  instead of leaving you staring at an empty list wondering why;
+- The web is read-only: **editing rosters and templates still happens only in the app** — the
+  web is for *using* them, not managing them;
+- A preview may leave the classroom unticked (it composes a sample using your default subject),
+  but actually sending requires ticking a classroom.

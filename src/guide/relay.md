@@ -62,11 +62,13 @@ cd /opt/classshout
 | `relay-shares.json` | 分享链接 | 中 |
 | `relay-schedule.json` | **老师排在服务器上的定时喊话** | **高** |
 | `relay-schedule-audio/` | 定时语音的音频（一条几十秒约 1 MB） | **高** |
+| `relay-rosters.json` | 老师同步上来的**学生名单与呼叫模板**（网页呼叫用的就是这一份） | **高**（含学生姓名与学号） |
 
 存放位置都可以用环境变量改到别处：`CLASSSHOUT_CONFIG`、`CLASSSHOUT_USER_STATE`、
 `CLASSSHOUT_RELAY_STATE`、`CLASSSHOUT_BINDING_STATE`、`CLASSSHOUT_SHARE_STATE`、
-`CLASSSHOUT_SCHEDULE_STATE`、`CLASSSHOUT_SCHEDULE_AUDIO`。
-另外 `CLASSSHOUT_SCHEDULE_TICK_MS` 是定时任务的检查间隔（默认 5000 毫秒）。
+`CLASSSHOUT_SCHEDULE_STATE`、`CLASSSHOUT_SCHEDULE_AUDIO`、`CLASSSHOUT_ROSTER_STATE`。
+另外 `CLASSSHOUT_SCHEDULE_TICK_MS` 是定时任务的检查间隔（默认 5000 毫秒），
+`CLASSSHOUT_LOG_LEVEL` 是落盘日志的详细程度（Trace / Debug / Info / Warning / Error，默认 Info）。
 
 备份就是把这些文件拷走 —— **`relay-schedule.json` 与 `relay-schedule-audio/` 别忘了**：
 漏掉它们的后果特别隐蔽，服务器起来之后一切正常，只有老师排好的那些定时悄无声息地没了，
