@@ -14,6 +14,14 @@ The ClassIsland side needs a companion plugin, **in a repository of its own**:
 [WRD1145/ClassShoutCiPlugin](https://github.com/WRD1145/ClassShoutCiPlugin) (GPL v3).
 The attachment is a `.cipx`; just drop it into `Plugins` under the ClassIsland data directory.
 
+> **Pick the right plugin build**: ClassIsland **2.1.0.x runs on `net8.0-windows`**, and only
+> **2.1.1 onward moved to `net10.0-windows`**. A plugin's target framework has to match its
+> host — getting it wrong raises no error at all, it just means "the plugin is installed but
+> nothing happens".
+> From **1.0.3.0** the plugin derives the framework from the host it is built for (the
+> 2.1.0.1 build is `net8.0-windows`); the earlier build hard-coded `net10.0-windows` and so
+> would not load in ClassIsland 2.1.0.1 — please upgrade the plugin.
+
 ## How delivery works
 
 ```

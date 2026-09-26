@@ -13,6 +13,12 @@ ClassIsland 那一侧需要一个联动插件，**单独一个仓库**：
 [WRD1145/ClassShoutCiPlugin](https://github.com/WRD1145/ClassShoutCiPlugin)（GPL v3）。
 附件是 `.cipx`，放到 ClassIsland 数据目录的 `Plugins` 下即可。
 
+> **插件版本要挑对**：ClassIsland **2.1.0.x 的宿主跑在 `net8.0-windows`** 上，
+> **2.1.1 起才换成 `net10.0-windows`**，而插件的目标框架必须与宿主一致 ——
+> 装错了不会报错，只是"插件装了但没反应"。
+> 插件从 **1.0.3.0** 起按宿主自动取框架（2.1.0.1 那份是 `net8.0-windows`），
+> 之前那份写死成 `net10.0-windows`，在 2.1.0.1 上加载不起来，请升级插件。
+
 ## 投递是怎么走的
 
 ```
