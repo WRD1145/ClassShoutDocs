@@ -26,7 +26,7 @@
 | `teacher-display.json` | 上次用的展示参数 | 否 |
 | `teacher-schedule.json` | 本机定时喊话（待发 + 最近处理完的） | 否 |
 | `schedule-audio/` | 本机定时语音的 WAV（发出去或取消之后就删掉） | 否 |
-| `teacher-rosters.json` | 学生名单（可能有好几份）。每位学生除了姓名/学号/简写/小组/性别，还带着隐形的**时间因子**与它的写入时刻（[随机叫人](/guide/call.html#随机叫人)用） | 否 |
+| `teacher-rosters.json` | 学生名单（可能有好几份，**按班各用各的**）。每位学生除了姓名/学号/简写/小组/性别，还带着隐形的**时间因子**与它的写入时刻（[随机叫人](/guide/call.html#随机叫人)用） | 否 |
 | `teacher-calls.json` | 呼叫模板（组件拼装出来的那几套），以及随机叫人的范围与冷却（小组 / 性别 / 人数 / 衰减分钟） | 否 |
 | `teacher-phrases.json` | 常用语（文字页那排一键填入的短语） | 否 |
 | `shout-history.json` | 最近 100 条喊话内容 | 否 |

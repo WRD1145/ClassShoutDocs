@@ -31,7 +31,7 @@ export const enSidebar = sidebar({
       text: "Relay server",
       icon: "fa-solid fa-server",
       collapsible: true,
-      children: ["relay.md", "console.md", "share.md"],
+      children: ["relay.md", "console.md", "roles.md", "share.md"],
     },
   ],
 

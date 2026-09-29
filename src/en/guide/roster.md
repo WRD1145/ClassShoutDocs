@@ -44,6 +44,29 @@ It is what random calling uses to "let whoever was just called sit out for a whi
 
 You can import several rosters (a teacher usually teaches several classes) and switch between them in the drop-down.
 
+## Rosters are isolated per classroom, and a head teacher can unify one
+
+Rosters are **isolated per classroom**: a roster imported for Class 2 is never used as Class 3's —
+a shout or a call always happens inside one particular classroom, and calling on people must only reach that class.
+
+On top of that, a **head teacher** (班主任) can upload a roster that a classroom **uses as a whole**, and decide
+whether to make it mandatory:
+
+| The situation in that classroom | Which roster is actually used |
+|---|---|
+| The head teacher uploaded one and set it **mandatory** | Always the head teacher's; you do not even get an "import from file" button |
+| The head teacher uploaded one, not mandatory | Yours if you imported one; otherwise the head teacher's |
+| The head teacher uploaded none | Yours |
+
+The roster page states "which roster this classroom is using" and, when it is mandatory, why
+(and who to ask to turn it off). In such a classroom your own roster is **not deleted** — it is merely not in
+effect, and it comes back the moment the head teacher turns the switch off.
+
+> Why a "mandatory" switch is needed: there must be exactly **one answer** to which roster a class is called from.
+> With two teachers each keeping their own, one of them may be unable to call anyone in that classroom, or may call
+> from a list that no longer matches (a transfer student added or not, someone who has moved class).
+> The details are in [accounts and permissions](/en/guide/roles.html).
+
 ## Label format: Name (student ID, short name, group)
 
 Whenever a student appears in a shout, this is always the format, and **only the fields you actually filled in go inside the parentheses**:

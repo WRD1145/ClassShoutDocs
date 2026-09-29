@@ -62,7 +62,8 @@ The server keeps its state in the app folder (environment variables can move it 
 | `relay-shares.json` | Share links | Medium |
 | `relay-schedule.json` | **Scheduled shouts a teacher has queued on the server** | **High** |
 | `relay-schedule-audio/` | Audio for scheduled voice shouts (a few tens of seconds is about 1 MB) | **High** |
-| `relay-rosters.json` | The **rosters and call templates** teachers sync up (this is what web calling uses) | **High** (student names and IDs) |
+| `relay-rosters.json` | The **rosters and call templates** teachers sync up (this is what web calling uses). **Isolated per classroom**: one entry per teacher per classroom inside the same file | **High** (student names and IDs) |
+| `relay-classroom-rosters.json` | The **shared classroom roster a head teacher uploads**, plus the "mandatory" switch (it belongs to the classroom, not to a teacher) | **High** (student names and IDs) |
 
 Every one of those locations can be moved elsewhere with an environment variable: `CLASSSHOUT_CONFIG`, `CLASSSHOUT_USER_STATE`,
 `CLASSSHOUT_RELAY_STATE`, `CLASSSHOUT_BINDING_STATE`, `CLASSSHOUT_SHARE_STATE`,
@@ -98,4 +99,8 @@ A teacher can bind several classrooms and switch between them in the teacher app
 - **Built-in administrator**: the account and password are in `relay-config.json`, and by default it is available for every class
   (no per-class authorization needed). It is the only account that can change its own password in the console.
 - **Teacher accounts**: teachers register themselves in the teacher app; whether they may use a given class is authorized by the administrator in the console.
+- **Head teacher** (班主任): something in between — they manage **the classrooms they head** (granting and revoking
+  teachers, uploading the roster that classroom uses as a whole), but cannot touch classrooms they do not head, nor
+  the accounts themselves. How to appoint one and what changes is in
+  [accounts and permissions](/en/guide/roles.html).
 - The server **deliberately does not distinguish** "account does not exist" from "wrong password" — that could be used to enumerate accounts.

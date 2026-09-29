@@ -62,7 +62,8 @@ cd /opt/classshout
 | `relay-shares.json` | 分享链接 | 中 |
 | `relay-schedule.json` | **老师排在服务器上的定时喊话** | **高** |
 | `relay-schedule-audio/` | 定时语音的音频（一条几十秒约 1 MB） | **高** |
-| `relay-rosters.json` | 老师同步上来的**学生名单与呼叫模板**（网页呼叫用的就是这一份） | **高**（含学生姓名与学号） |
+| `relay-rosters.json` | 老师同步上来的**学生名单与呼叫模板**（网页呼叫用的就是这一份）。**按班隔离**：同一个文件里每位老师每个班各一份 | **高**（含学生姓名与学号） |
+| `relay-classroom-rosters.json` | **班主任上传的班级统一名单**，以及"是否强制"那个开关（属于班级，不属于某位老师） | **高**（含学生姓名与学号） |
 
 存放位置都可以用环境变量改到别处：`CLASSSHOUT_CONFIG`、`CLASSSHOUT_USER_STATE`、
 `CLASSSHOUT_RELAY_STATE`、`CLASSSHOUT_BINDING_STATE`、`CLASSSHOUT_SHARE_STATE`、
@@ -98,4 +99,7 @@ cd /opt/classshout
 - **内置管理员**：账号与口令在 `relay-config.json` 里，默认对所有班级可用
   （不需要逐个授权）。它是唯一能在控制台里改自己口令的账号。
 - **老师账号**：自己在教师端注册；能不能用某个班由管理员在控制台上授权。
+- **班主任**：介于两者之间 —— 能管**自己当班主任的那几个班**（授权 / 收回老师、
+  上传这个班统一使用的名单），管不到别人的班，也管不到账号本身。
+  怎么指定、以及它会带来哪些差别，见[账号与权限](/guide/roles.html)。
 - 服务端**刻意不区分**"账号不存在"与"口令错误" —— 那样可以被用来枚举账号。

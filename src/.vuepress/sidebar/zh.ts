@@ -37,7 +37,7 @@ export const zhSidebar = sidebar({
       text: "服务器",
       icon: "fa-solid fa-server",
       collapsible: true,
-      children: ["relay.md", "console.md", "share.md"],
+      children: ["relay.md", "console.md", "roles.md", "share.md"],
     },
   ],
 

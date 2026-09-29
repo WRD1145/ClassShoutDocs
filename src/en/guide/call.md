@@ -36,6 +36,22 @@ a blank component panel gives a first-time user no hint whatsoever.
 When you've made changes and haven't saved them yet, "(unsaved) xxx" （未保存）xxx shows up in the dropdown: we'd rather have one extra entry
 than quietly drop the components the teacher just dragged in.
 
+## Which classroom it goes to (exactly one)
+
+On the Call page you **pick one classroom first**, then pick students — and only one:
+
+- the names, groups and randomly drawn students in the sentence all come from **one particular roster**, and rosters
+  are isolated per classroom (see [roster](/en/guide/roster.html)). Calling three classrooms at once means only one
+  of them gets the "right" student;
+- random calling also records "who was just called" (the time factor), and that is recorded on that roster —
+  sending to three classrooms at once throws away the factor bookkeeping for the other two.
+
+So this is not "multi-select is not implemented yet", it is **deliberately a single choice**:
+a control that looks selectable but produces a wrong result is worse than one that is missing.
+
+> The Text and Voice pages are the opposite: they share one "sendable classrooms" list, so ticking three classrooms
+> sends to three (see [shouting to several classrooms](/en/guide/multi-class.html)).
+
 ## Selecting students
 
 - The list can be displayed by three kinds of identifier: **name / student ID / short name**;
