@@ -28,8 +28,8 @@ machine should have their own separate identities.
 | `teacher-display.json` | The display parameters used last time | No |
 | `teacher-schedule.json` | Local scheduled shouts (pending + recently processed) | No |
 | `schedule-audio/` | WAV files for local scheduled voice (deleted once sent or cancelled) | No |
-| `teacher-rosters.json` | Rosters (there may be several) | No |
-| `teacher-calls.json` | Call templates (the sets assembled from components) | No |
+| `teacher-rosters.json` | Rosters (there may be several). Besides name / student ID / short name / group / gender, each student also carries the invisible **time factor** and the moment it was written (used by [random calling](/en/guide/call.html#random-calling)) | No |
+| `teacher-calls.json` | Call templates (the sets assembled from components), plus random calling's range and cooldown (group / gender / count / decay minutes) | No |
 | `teacher-phrases.json` | Quick phrases (the row of one-tap phrases on the text page) | No |
 | `shout-history.json` | The content of the last 100 shouts | No |
 | `appearance.json` | Theme color | No |

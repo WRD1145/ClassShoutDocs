@@ -6,18 +6,41 @@ There is no reason for it to hold a complete student roll.
 
 ## Import
 
-One student per line:
+One student per line, five columns in all:
 
 ```
-姓名,学号,简写,小组
-张三,20250101,小张,A组
-李四,20250102,,B组
+姓名,学号,简写,小组,性别
+张三,20250101,小张,A组,男
+李四,20250102,,B组,女
 王五
 ```
 
-- **Only the name is required**; just leave the other three fields empty;
+- **Only the name is required**; just leave the other four fields empty;
+- **Spreadsheet files import directly**: `.xlsx` / `.xlsm` / `.xls` as well as `.csv` / `.txt`
+  (the "import from file" button on the roster page; on a phone this opens the system file picker).
+  Nine out of ten rosters on a teacher's computer are spreadsheets, and "save it as CSV first" is exactly the step
+  that goes wrong most easily — the wrong encoding gets picked, or Excel eats the leading zeros of a student ID.
+  Reading the spreadsheet directly removes that step;
 - **You can copy and paste straight out of Excel** — a header row, blank lines, and quotes are all handled automatically, and a line starting with `#` counts as a comment;
-- A line with no name only skips that one line, and tells you **which line number** it was; the whole batch does not fail.
+- A line with no name only skips that one line, and tells you **which line number** it was; the whole batch does not fail;
+- **The header row is optional**: if a row is recognisably the "姓名" (name) header it is skipped, and if not, the first row is read as a student too;
+- A spreadsheet file only reads its **first worksheet**, and uses the **worksheet name as the roster name**
+  (that is closer to the content than the file name — if the worksheet is called "三年二班" ("Class 2, Year 3"),
+  the roster you get is called "三年二班", not "roster(1)").
+
+### What each of the five columns is for
+
+| Column | Purpose |
+|---|---|
+| 姓名 (Name) | Required. Without it the line means nothing |
+| 学号 (Student ID) | For display and taking attendance. It is often a number in a spreadsheet; importing writes it as an integer (never `20250101.0`) |
+| 简写 (Short name) | The short form students use for each other, e.g. "小张" |
+| 小组 (Group) | The Call page can tick a whole group in one tap; [random calling](/en/guide/call.html#random-calling) can also draw from one group only |
+| 性别 (Gender) | Used only for the range filter of [random calling](/en/guide/call.html#random-calling). `男`/`女`, `男生`/`女生`, `M`/`F`, `1`/`0` are all recognised; anything unrecognised is left empty |
+
+Every student in a roster also carries an **invisible time factor**, which is `0.00` on import.
+It is what random calling uses to "let whoever was just called sit out for a while", and it is never shown in the UI
+(see [random calling](/en/guide/call.html#random-calling)).
 
 You can import several rosters (a teacher usually teaches several classes) and switch between them in the drop-down.
 

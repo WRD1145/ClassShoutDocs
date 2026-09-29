@@ -12,6 +12,7 @@ The difference between it and the "Text" (文字) page is this: on the Text page
 | Student (short name) (学生（简写）) | His short name (outputs nothing if it isn't filled in) |
 | Student (student ID) (学生（学号）) | His student ID (outputs nothing if it isn't filled in) |
 | Group members (小组成员) | **Every member** of the group he belongs to, separated by enumeration commas (、) |
+| Random calling (随机叫人) | The few who were drawn, separated by enumeration commas (see [random calling](#random-calling) below) |
 | Teacher name (教师名字) | Your own name (including the subject you teach, e.g. "数学张老师", that is, subject + surname + "teacher") |
 
 **Tap once** and the component is appended to the end of the assembly area; you can also **drag it straight over** (on desktop; drag-and-drop support on phones is limited, so just tap).
@@ -46,6 +47,63 @@ than quietly drop the components the teacher just dragged in.
 The display parameters for what gets sent (window/pop-up, font size, dwell time, read aloud) are the same set as the ones currently on the "Text" page —
 we deliberately don't keep a second set, otherwise the same app would send out different font sizes depending on which of the two routes you used.
 
+## Random calling
+
+The "**random calling**" (随机叫人) component in the component palette is a different way of using the page: instead of picking students yourself,
+you **draw them from a range**. Put it in a template and the page switches to random mode (the student list gives way to the settings below).
+
+One template is provided by default:
+
+```
+请 [随机叫人] 来回答这个问题      ("[random] please come and answer this question")
+```
+
+### The range
+
+| Setting | Meaning |
+|---|---|
+| Group (小组) | Draw only from this one group; "不限" (no limit) means the whole class |
+| Gender (性别) | Draw only from the boys / the girls; students whose gender is blank are never drawn in either of those two modes |
+| Count (人数) | How many to draw at once, 1 by default, 10 at most |
+| Cooldown (冷却) | How long the time factor takes to decay from full back to 0, **40 minutes** by default (about one lesson); 20 / 40 / 60 / 90 minutes are offered |
+
+All four live only on **this device**: they are the temporary choices of "how I want to draw in this lesson",
+and, like the roster, there is no reason for them to travel to the server.
+
+### The odds: an invisible time factor
+
+Every student carries a "time factor" that the UI never shows. The rules are:
+
+- It is `0.00` on import, with a ceiling of `1.00`;
+- **The smaller the factor, the likelier the draw**: weight = `1 − factor`, with a floor of `5%` —
+  someone just called is not completely out of the running (otherwise two draws in a row could never land on them);
+- **Being drawn once resets the factor to somewhere between `0.95` and `1.00`** (just called → the odds are pushed to their lowest);
+- After that it decays **linearly** back to 0, and the decay window is the "cooldown" above.
+
+Why not plain randomness: plain randomness produces results that are plainly unfair, like "the same student three times in one lesson",
+whereas what the teacher wants is "everyone does get called, but whoever was just called takes a breather first".
+
+> The factor is **computed**, not continuously rewritten by a timer: what is stored is "the factor value + the moment it was written",
+> and the current value falls out of a single subtraction. So closing the app, suspending the machine, or even changing the system clock
+> cannot make these weights go stale.
+
+### A few details
+
+- **A preview does not draw anybody**: in random mode the preview only states which range will be drawn from —
+  it does not draw once for real and does not touch anyone's factor. The real draw happens at the moment you press send;
+- After sending, the page states **who was drawn** ("抽到：张三", "drew: Zhang San"), and the classroom shouts that sentence out;
+- The students drawn are **recorded and written to disk immediately** (the factor and the moment) — recording it is the whole point;
+  draw without recording and "just called" means nothing;
+- When the template contains other components as well, the interpretation is fixed:
+  **name / short name / student ID take the first student drawn** (so you can write "张三 请回答"), and
+  **group members takes the groups those students belong to** (deduplicated);
+- If the range contains nobody (say that group has no gender filled in and you asked for boys only), no empty message goes out —
+  the page tells you the range is empty.
+
+> Random calling is currently available **in the app only**. The web call section composes sentences from components and ticked students;
+> it has no random mode — the time factors and the record of "who was just called" live on the teacher's own device,
+> the server does not have that state, and putting it on the web would mean half of it being recorded in each of two places.
+
 ## Calling from the web
 
 Once you're signed in to your server account, open the server address in a browser: the
@@ -62,6 +120,7 @@ teacher's own device, so sync it once before the first use:
 > The app's "Roster" page → the button at the bottom, "sync the roster to the server (for web calling)".
 > It syncs **the roster you're currently on** plus every call template; after you change the
 > roster, just press it again.
+> What crosses over is the name, student ID, short name, group and gender; the **time factor is not part of it**.
 
 - When nothing has been synced yet, that part of the page says to go and sync in the app,
   instead of leaving you staring at an empty list wondering why;
