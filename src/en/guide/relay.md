@@ -8,6 +8,27 @@
 The link priority is **LAN > server**: on the same subnet latency is lower, and it doesn't use up public bandwidth either.
 When both are available, the LAN is used automatically.
 
+## Using a self-signed certificate (HTTPS)
+
+In production, give the server a proper certificate (Let's Encrypt and friends). The one stood up temporarily at a
+school, or the one on an intranet IP, usually has a **self-signed certificate** — and then both ends report
+"SSL certificate problem" and nothing works.
+
+Both the teacher app and the classroom app have a switch in their network settings: **"允许不信任的 TLS 连接"**
+(accept untrusted TLS connections).
+
+- With it on, the connection continues even when the certificate is bad;
+- It covers **connecting to the server** and **checking for updates** (school TLS proxies routinely replace the
+  certificate of the download host too); it does not affect online speech (Edge TTS) — that is not our server, and
+  a broken certificate there should fail honestly;
+- It takes effect on the **next** connection: the one already open is unaffected, so after toggling it, press
+  "sign in" or "connect to the server" again;
+- It is off by default. **The web console in the browser has no such switch** — that side belongs to the browser,
+  which only gives you a "continue to this website (not recommended)" page to click through.
+
+> Be clear about the cost: with it on, anyone on that path can **read and modify the content**.
+> A certificate exists precisely to prove "the other end is that server"; bypass it and any device on the same
+> network can impersonate the server. Only use it with your own server, and never leave it on on a public network.
 ## Deployment
 
 The server is self-contained (there are builds for both Windows and Linux, and **from 1.10.0 it is an archive rather than a single file**).

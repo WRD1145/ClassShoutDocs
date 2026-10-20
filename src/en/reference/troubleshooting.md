@@ -9,6 +9,18 @@ Find your symptom.
 3. Did the classroom app close its window without staying in the tray — that amounts to quitting;
 4. Try a manual connection with `IP:port`: if it connects, the problem is in the implementation; if it doesn't, the problem is the network.
 
+## "SSL certificate problem" when connecting to the server
+
+The server is using a self-signed certificate (the one stood up temporarily at a school, or the one on an intranet
+IP), while both ends only accept a valid certificate by default.
+
+In the teacher app: "设备" (devices) → "中继服务器"; in the classroom app: "设置" (settings) → "跨局域网喊话".
+Both have **"允许不信任的 TLS 连接"** (accept untrusted TLS connections): switch it on and press "sign in"
+(or "connect to the server") again.
+
+Two things to keep in mind: it also relaxes the **update check** path (school TLS proxies replace the certificate of
+the download host too), and once it is on, anyone on that path can read and modify the content — only use it with
+your own server. See the "Using a self-signed certificate" section in [relay server](/en/guide/relay.html).
 ## You filled in the server address and Test connection always fails
 
 - Address format: `192.168.1.10:8080` is fine and `http://` is added automatically; only the http and https protocols are supported;

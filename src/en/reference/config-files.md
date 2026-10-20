@@ -13,7 +13,7 @@ machine should have their own separate identities.
 
 | File | Contents | Holds credentials |
 |---|---|---|
-| `classroom.json` | Classroom name, UUID, password, server address | **Yes** (password) |
+| `classroom.json` | Classroom name, UUID, password, server address, and the "accept untrusted TLS connections" switch | **Yes** (password) |
 | `classroom-notification.json` | Pop-up settings and the default display parameters for shouts | No |
 | `classroom-speech.json` | Speech settings (engine, voice, volume, rate) | No |
 | `classroom-stt.json` | The transcription endpoint address and **key** | **Yes** (key) |
@@ -25,7 +25,7 @@ machine should have their own separate identities.
 
 | File | Contents | Holds credentials |
 |---|---|---|
-| `teacher.json` | Server address, login token, saved classrooms (**including passwords**), subjects taught (default + per class) | **Yes** |
+| `teacher.json` | Server address, login token, saved classrooms (**including passwords**), subjects taught (default + per class), and the "accept untrusted TLS connections" switch | **Yes** |
 | `teacher-display.json` | The display parameters used last time | No |
 | `teacher-schedule.json` | Local scheduled shouts (pending + recently processed) | No |
 | `schedule-audio/` | WAV files for local scheduled voice (deleted once sent or cancelled) | No |
