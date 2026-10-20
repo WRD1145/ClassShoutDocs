@@ -72,6 +72,10 @@ the same reply can arrive twice, once on each path — replies are de-duplicated
 duplicate is swallowed. One reply producing two notifications would make it look as if the room replied
 twice.
 
+> Notifications only arrive while the app is **running**: on the desktop, closing the window minimises it
+> to the tray (so it keeps running); on Android there is no always-on background service, so once the system
+> kills the app you will only find out next time you open it.
+
 ## Classroom replies in the web console
 
 Open the server address in a browser and sign in; the teacher view has a "教室回复" panel where you can
