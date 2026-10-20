@@ -9,6 +9,7 @@ in the classroom is there for the students to look at, so settings don't take ov
 | Classroom info (教室信息) | The classroom name — it shows up in the teacher app's list, in pop-ups and on the server console |
 | Read-aloud settings (朗读设置) | Volume, speed, read-aloud engine (system voice / Edge online voice), voice, and preview |
 | Transcription (语音转文字) | See [captions](/en/guide/transcript.html) |
+| Replies (回复) | How the classroom can answer the teacher: "got it" (知道了), quick replies, text, voice, and the voice time limit (see [classroom replies](/en/guide/reply.html)) |
 | Cross-LAN shouts (跨局域网喊话) | Relay server address, connect/disconnect, this classroom's UUID and password |
 | How shouts display by default (喊话默认怎么显示) | Which preset is used when the sender didn't specify one (display style / font size / dwell time) |
 | Shout pop-ups (喊话弹窗) | See [on-screen pop-ups](/en/guide/notification.html) |
@@ -59,3 +60,6 @@ The classroom app can run on Linux too, but **system read-aloud requires `spd-sa
 on the system**. If neither is there, a reminder line is written into the log at startup, and the recommendation
 is to switch to the Edge online voice in the read-aloud settings — otherwise there will be no sound in the
 classroom.
+
+For what the tray, desktop notifications, playback and recording each need installed, see
+[the classroom app on Linux](/en/guide/linux.html).

@@ -11,6 +11,7 @@
 教室端也支持 Linux（发布物里有 `ClassShout.Classroom-linux-x64`），
 但 Linux 上需要系统里有 `spd-say` 或 `espeak-ng` 才能用系统语音 ——
 没有的话建议在设置里改用 Edge 在线语音，否则教室里不会出声。
+托盘、通知、播放与录音各自的依赖见 [Linux 上的教室端](/guide/linux.html)。
 
 ## 打包（从源码）
 

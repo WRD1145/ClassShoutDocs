@@ -15,6 +15,7 @@
 | `classroom-notification.json` | 弹窗设置与喊话默认展示参数 | 否 |
 | `classroom-speech.json` | 朗读设置（引擎、音色、音量、语速） | 否 |
 | `classroom-stt.json` | 语音转文字的接口地址与**密钥** | **是**（密钥） |
+| `classroom-reply.json` | 回复设置（快捷回复、知道了、文字/语音开关、语音时长上限） | 否 |
 | `settings-lock.json` | PIN 的派生值与盐、哪几项受保护 | **是**（派生值，不含明文） |
 | `appearance.json` | 主题色（两端共用同一份格式） | 否 |
 

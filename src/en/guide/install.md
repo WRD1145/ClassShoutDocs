@@ -11,6 +11,8 @@
 The classroom app supports Linux too (the release includes `ClassShout.Classroom-linux-x64`),
 but on Linux the system needs `spd-say` or `espeak-ng` for system voice to work —
 if neither is there, switch to the online Edge voice in settings, otherwise the classroom will stay silent.
+For what the tray, notifications, playback and recording each need, see
+[the classroom app on Linux](/en/guide/linux.html).
 
 ## Packaging (from source)
 

@@ -19,13 +19,13 @@ export const enSidebar = sidebar({
       text: "In class",
       icon: "fa-solid fa-chalkboard-user",
       collapsible: true,
-      children: ["roster.md", "call.md", "transcript.md"],
+      children: ["roster.md", "call.md", "reply.md", "transcript.md"],
     },
     {
       text: "Classroom app",
       icon: "fa-solid fa-school",
       collapsible: true,
-      children: ["notification.md", "classisland.md", "classroom-settings.md", "pin.md"],
+      children: ["notification.md", "classisland.md", "classroom-settings.md", "linux.md", "pin.md"],
     },
     {
       text: "Relay server",
@@ -40,7 +40,7 @@ export const enSidebar = sidebar({
       text: "Reference",
       icon: "fa-solid fa-list",
       collapsible: false,
-      children: ["README.md", "protocol.md", "config-files.md", "troubleshooting.md"],
+      children: ["README.md", "protocol.md", "config-files.md", "platforms.md", "troubleshooting.md"],
     },
   ],
 

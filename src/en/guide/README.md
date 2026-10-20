@@ -6,8 +6,8 @@ This documentation is broken into blocks by "what you want to do", so you don't 
 |---|---|
 | **Getting started** | Packaging, deployment, getting your first classroom running |
 | **Shouts** | How to send text / voice / images, what they look like on screen, how to send to several classes at once, and how to send on a schedule |
-| **In class** | Roster, quick calls, transcription captions |
-| **Classroom app** | On-screen pop-ups, ClassIsland integration, the classroom app's various settings, PIN protection |
+| **In class** | Roster, quick calls, classroom replies, transcription captions |
+| **Classroom app** | On-screen pop-ups, ClassIsland integration, the classroom app's various settings, Linux dependencies, PIN protection |
 | **Server** | How to deploy the relay server, the admin console, share links |
 
 ## Three components — tell them apart first

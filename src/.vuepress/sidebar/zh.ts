@@ -25,13 +25,13 @@ export const zhSidebar = sidebar({
       text: "课堂",
       icon: "fa-solid fa-chalkboard-user",
       collapsible: true,
-      children: ["roster.md", "call.md", "transcript.md"],
+      children: ["roster.md", "call.md", "reply.md", "transcript.md"],
     },
     {
       text: "教室端",
       icon: "fa-solid fa-school",
       collapsible: true,
-      children: ["notification.md", "classisland.md", "classroom-settings.md", "pin.md"],
+      children: ["notification.md", "classisland.md", "classroom-settings.md", "linux.md", "pin.md"],
     },
     {
       text: "服务器",
@@ -46,7 +46,7 @@ export const zhSidebar = sidebar({
       text: "参考",
       icon: "fa-solid fa-list",
       collapsible: false,
-      children: ["README.md", "protocol.md", "config-files.md", "troubleshooting.md"],
+      children: ["README.md", "protocol.md", "config-files.md", "platforms.md", "troubleshooting.md"],
     },
   ],
 

@@ -17,6 +17,7 @@ machine should have their own separate identities.
 | `classroom-notification.json` | Pop-up settings and the default display parameters for shouts | No |
 | `classroom-speech.json` | Speech settings (engine, voice, volume, rate) | No |
 | `classroom-stt.json` | The transcription endpoint address and **key** | **Yes** (key) |
+| `classroom-reply.json` | Reply settings (quick replies, "got it", the text/voice switches, the voice time limit) | No |
 | `settings-lock.json` | The PIN's derived value and salt, and which items are protected | **Yes** (derived value, no plaintext) |
 | `appearance.json` | Theme color (both apps share the same format) | No |
 
