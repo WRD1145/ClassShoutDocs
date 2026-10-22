@@ -21,6 +21,40 @@ machine should have their own separate identities.
 | `settings-lock.json` | The PIN's derived value and salt, and which items are protected | **Yes** (derived value, no plaintext) |
 | `appearance.json` | Theme color (both apps share the same format) | No |
 
+### `classroom-reply.json`
+
+All reply settings live in this one file. The key names are PascalCase exactly as the app writes
+them (`Enabled`, `QuickReplies`); copy them as they are when editing by hand. A key whose casing
+does not match is treated as an unknown field and skipped — the app does not report an error, the
+change just has no effect.
+
+| Field | Type | Default | Meaning |
+|---|---|---|---|
+| `Enabled` | Boolean | `true` | Master switch. When off, no reply entry appears on that classroom screen |
+| `ShowAcknowledge` | Boolean | `true` | Whether the "Got it" (知道了) button is shown |
+| `AcknowledgeTemplate` | String | `{教室}知道了` | The sentence "Got it" sends; placeholders are allowed. Empty falls back to `AcknowledgeComponents` (by default the classroom name + "知道了") |
+| `AllowText` | Boolean | `true` | Allows a typed text reply in the classroom |
+| `AllowVoice` | Boolean | `true` | Allows voice replies; turn it off in a room without a microphone |
+| `VoiceMaxSeconds` | Integer | `15` | Voice time limit in seconds. Clamped to 3–60 on load and on save |
+| `QuickReplies` | Array | 收到 / 马上 / 没问题 | The quick replies, at most 6; extras are dropped when loading or saving |
+
+Each entry in `QuickReplies`:
+
+| Field | Type | Meaning |
+|---|---|---|
+| `Id` | String | Identifies this entry; editing uses it to find the original row |
+| `Label` | String | The button text; when empty, the assembled content is used |
+| `Components` | Array | The components the reply is assembled from |
+| `Components[].Kind` | String | Component kind: `text`, `classroom`, `teacher`, `time`, `original` |
+| `Components[].Text` | String | The text when `Kind` is `text`; may contain `{教室}`, `{老师}`, `{时间}`, `{原话}` |
+
+A component whose `Kind` is not `text` ignores `Text`: `classroom`, `teacher`, `time` and `original`
+take the classroom name, the teacher's name, the reply time and the original shout respectively —
+the same values as the placeholders. A `{...}` that is not recognised is left as written, not dropped.
+
+> `AcknowledgeComponents` is the component form used since 1.15.0; it is only consulted when
+> `AcknowledgeTemplate` is empty. Normally you edit the template and never touch it.
+
 ## Teacher app
 
 | File | Contents | Holds credentials |

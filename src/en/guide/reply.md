@@ -10,8 +10,8 @@ Four ways, and which of them show up is decided by the classroom app's settings:
 
 | How | What happens in the classroom | What the teacher receives |
 |---|---|---|
-| Got it | One tap, done in a second | The classroom name + "知道了" (the content is assembled from components; that pair is the default) |
-| Quick reply | Pick one of the preset phrasings | That sentence itself, e.g. "收到", "马上", "没问题" |
+| Got it | One tap, done in a second | The classroom name + "知道了" (the content can be edited; that pair is the default) |
+| Quick reply | Pick one of the configured phrasings | That sentence itself (placeholders allowed), e.g. "收到", "马上", "没问题" |
 | Text | Type a sentence on the spot | The sentence that was typed |
 | Voice | Record a short clip, then tap "say it, send it" (说完了，发送); it is sent automatically at the time limit | A replayable clip plus its duration |
 
@@ -48,11 +48,59 @@ teacher app instead and the same set of buttons would show up in every classroom
 | Setting | Default | Notes |
 |---|---|---|
 | Allow replies (允许回复) | On | The master switch. Turned off, no reply entry appears on that screen at all |
-| Show the "Got it" button (显示「知道了」按钮) | On | The most used one: one second to tap, and the teacher knows the room saw it |
+| Show the "Got it" button (显示「知道了」按钮) | On | The most used one: one second to tap, and the teacher knows the room saw it. The sentence it sends can be edited (see below) |
 | Allow text replies (允许文字回复) | On | The classroom types a sentence on the spot |
 | Allow voice replies (允许语音回复) | On | Greyed out when this machine has no microphone (Windows needs a recording device, Linux needs `arecord` from `alsa-utils`) |
 | Voice time limit (语音时长上限) | 15 seconds | Adjustable from 3 to 60 seconds; it sends automatically at the limit, so nobody in the classroom has to remember to stop it |
-| Quick replies (快捷回复) | 收到 / 马上 / 没问题 | **At most 6**: any more and they no longer fit on that screen, or get mis-tapped |
+| Quick replies (快捷回复) | 收到 / 马上 / 没问题 | **At most 6**: any more and they no longer fit on that screen, or get mis-tapped. Every one of them can be edited (see below) |
+
+### Quick replies: every one is yours to write
+
+The three defaults are only a starting point for a first-time user: most classes can use them,
+but "homework is all handed in" or "we are in the lab this lesson" is something only that class knows.
+So every row in the list has "Edit" (编辑) and "Delete" (删除):
+
+- **Edit** loads that row's button text and content back into the fields below, and the button
+  changes from "Add" (添加) to "Save changes" (保存修改) with "Cancel editing" (取消编辑) next to it.
+  It changes that same row and does not take a new slot — otherwise fixing one sentence would mean
+  deleting it and adding it again, and it would drop to the end of the list;
+- **Delete** removes the row and the ones after it move up.
+
+The `3 / 6` in the top-right corner is how many are in use. The limit is six, not because the file
+cannot hold more, but because these buttons sit next to "Got it" on the classroom screen: any more
+and they no longer fit, and are easy to mis-tap.
+
+The content can contain placeholders. They are replaced **at the moment someone taps in the classroom**,
+so the same `{教室}收到了` goes out differently in every room:
+
+| Write this | Replaced with | Example |
+|---|---|---|
+| `{教室}` | This classroom's name | 三年二班 |
+| `{老师}` | The teacher's name in this classroom (with the subject) | 数学张老师 |
+| `{时间}` | The moment of the reply | 14:05 |
+| `{原话}` | The shout being replied to | 请把作业收上来 |
+
+The English spellings work too: `{classroom}`, `{teacher}`, `{time}`, `{original}`.
+A `{...}` that is not recognised is **left exactly as written** and never silently dropped —
+dropping it would leave whoever wrote it with half a sentence and no clue where to fix it.
+
+For example, if the content is `{教室}收到了`, the teacher receives "三年二班收到了"; if it is
+`{时间}{原话}已经收了`, they receive "14:05请把作业收上来已经收了".
+The four small buttons under the content field are those placeholders; tapping one appends it to
+the end of the content — no need to place the cursor somewhere in the field first.
+
+The button text can be written separately; left empty, it uses the content sentence. Chinese
+placeholders in the content show up on the button as the words "教室" and "老师" rather than
+literal braces.
+
+The sentence the "Got it" button sends can be edited too: the line under the switch defaults to
+`{教室}知道了`, accepts the same placeholders, and shows "发出去是：…" (what goes out is: …) live
+underneath. Left empty, it falls back to the built-in "classroom name + 知道了". It is kept apart
+from the quick replies because this button is about one-second taps: most classes never change it,
+but some want it to carry the classroom name.
+
+"Restore the default few" (恢复默认的几条) puts the quick replies back to 收到 / 马上 / 没问题 —
+for when you deleted them all and want them back.
 
 These settings live in this machine's `classroom-reply.json` and hold no credentials
 (see [Config files at a glance](/en/reference/config-files.html)).

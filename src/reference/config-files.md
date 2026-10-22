@@ -19,6 +19,38 @@
 | `settings-lock.json` | PIN 的派生值与盐、哪几项受保护 | **是**（派生值，不含明文） |
 | `appearance.json` | 主题色（两端共用同一份格式） | 否 |
 
+### `classroom-reply.json`
+
+回复的全部设置都在这个文件里。键名是首字母大写（`Enabled`、`QuickReplies`）—— 手改时
+照抄文件里的写法；大小写对不上，那一项会被当成不认识的字段跳过：应用不报错，只是改了不生效。
+
+| 字段 | 类型 | 默认 | 含义 |
+|---|---|---|---|
+| `Enabled` | 布尔 | `true` | 总开关。关掉之后教室那块屏上不出现任何回复入口 |
+| `ShowAcknowledge` | 布尔 | `true` | 是否显示「知道了」按钮 |
+| `AcknowledgeTemplate` | 字符串 | `{教室}知道了` | 「知道了」发出去的那句话，可写占位符；留空则退回 `AcknowledgeComponents`（默认是教室名 +「知道了」） |
+| `AllowText` | 布尔 | `true` | 允许教室里现打一句文字回复 |
+| `AllowVoice` | 布尔 | `true` | 允许语音回复；没有麦克风的教室应当关掉它 |
+| `VoiceMaxSeconds` | 整数 | `15` | 语音时长上限（秒）。读入与保存时都收进 3–60 |
+| `QuickReplies` | 数组 | 收到 / 马上 / 没问题 | 快捷回复，最多 6 条；多出的在读入或保存时被截掉 |
+
+`QuickReplies` 的每一条：
+
+| 字段 | 类型 | 含义 |
+|---|---|---|
+| `Id` | 字符串 | 这一条的标识，编辑时靠它找回原来那一条 |
+| `Label` | 字符串 | 按钮上的文字；为空时用拼出来的内容 |
+| `Components` | 数组 | 回复由哪些组件拼成 |
+| `Components[].Kind` | 字符串 | 组件种类：`text`、`classroom`、`teacher`、`time`、`original` |
+| `Components[].Text` | 字符串 | `Kind` 为 `text` 时的那段文字；可以写 `{教室}` `{老师}` `{时间}` `{原话}` |
+
+`Components` 里 `Kind` 不是 `text` 的组件不看 `Text`：`classroom`、`teacher`、`time`、
+`original` 各自取教室名、老师称呼、回复时刻与原喊话，和占位符是同一套值。
+认不出来的 `{...}` 原样留着，不会被删掉。
+
+> `AcknowledgeComponents` 是 1.15.0 起的组件写法，只有在 `AcknowledgeTemplate` 为空时
+> 才用得上；正常改模板就行，不必碰它。
+
 ## 教师端
 
 | 文件 | 内容 | 含凭据 |
