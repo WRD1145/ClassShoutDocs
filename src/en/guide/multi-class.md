@@ -11,6 +11,16 @@ at the same time.
 - The send result reports honestly "which classes did not get it", so when something fails you can see straight away
   which class it was.
 
+## Scanning lives on this page too
+
+Right above "Who is this going to" (「这条发给谁」) is "Classrooms on this network" (「同一网络下的教室」):
+tap "Scan" (「扫描」), then tap a classroom that was found — it connects and joins the tick list.
+It sits on this page rather than the "Devices" (「设备」) page because **the classrooms the scan finds
+are exactly the ones the shout goes to next** — an entry point in two places, with a trip back to the
+other page to connect after scanning, is simply redundant. The Devices page holds the typed-address
+"Connect over the LAN" (「通过局域网连接」) and the cross-network "Connect through a server"
+(「通过服务器连接」); the scan is not there.
+
 ## Voice shouts go only to the currently bound classroom
 
 Sound comes out of one particular classroom's speakers, so playing it to several classes at once makes no sense.

@@ -11,8 +11,13 @@ For which features each platform supports, see the
 
 ```bash
 tar xzf ClassShout.Classroom-linux-x64.tar.gz
-./app/ClassShout.Classroom --diagnose
+cd ClassShout.Classroom
+DOTNET_ROOT="$PWD/runtime" ./ClassShout.Classroom --diagnose
 ```
+
+The program itself sits in the unpacked root, and `DOTNET_ROOT` has to point at the `runtime/` next
+to it — that is exactly what `run.sh` does (`cd` to its own directory, set `DOTNET_ROOT`, then start
+the program).
 
 It only prints, it does not start the interface, one line per backend:
 

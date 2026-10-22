@@ -62,11 +62,15 @@
 
 | 端 | RID / 产物 | 说明 |
 |---|---|---|
-| 教室端 | `win-x64` → `ClassShout.Classroom-win-x64.zip`；`linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | 自包含，机器上不用装 .NET 运行时 |
-| 教师端（桌面） | `win-x64` → `ClassShout.Teacher-win-x64.zip` | 自包含；**没有 Linux 包** |
+| 教室端 | `win-x64` → `ClassShout.Classroom-win-x64.zip`；`linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | 程序文件在根目录、私有运行时在 `runtime/`；机器上不用装 .NET 运行时 |
+| 教师端（桌面） | `win-x64` → `ClassShout.Teacher-win-x64.zip` | 同一个形状（根目录 + `runtime/`）；**没有 Linux 包** |
 | 教师端（手机） | `android-arm64` + `android-x64` → `classshout-teacher-<版本>-universal.apk` | **APK 是自包含的**：.NET 运行时与程序集都在包里，手机上不用再装别的东西 |
 | 中继服务器 | `win-x64` → zip；`linux-x64` → `ClassShout.RelayServer-linux-x64.tar.gz` | Linux 包解压后先 `chmod +x`，Windows 打的 tar 不保留可执行位 |
 
+- 教室端、教师端桌面版与中继服务器的压缩包解开来都是同一个形状：**程序文件在根目录、
+  运行时在 `runtime/`**，外加 `logs/` 与启动脚本；启动脚本先设好 `DOTNET_ROOT` 再起主程序，
+  所以"不用装 .NET"靠的就是这个目录（删了它程序就起不来）。
+  `pack.ps1 -FrameworkDependent` 例外：连 `runtime/` 都不带，体积最小，但目标机必须先装 .NET 10 运行时；
 - 通用 APK 两个 ABI 都带，约 63 MB；`pack.ps1 -SplitApk` 会额外为单个 ABI 各出一个包，约 32 MB。
   体积的大头是关掉裁剪之后的托管程序集，这是为了 XAML 反射解析不出问题而做的取舍；
 - 一端的版本落后**不会报错**：图片收不到、展示参数退回自己的默认值，所以升级要两端一起

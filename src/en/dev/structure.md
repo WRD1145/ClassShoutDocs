@@ -25,19 +25,27 @@ Each app is packed into a single archive, and unpacking it gives the same four t
 
 ```
 ClassShout.Classroom/
-├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Linux 是 run.sh）
+├─ ClassShout.Classroom.exe 启动.cmd    ← double-click this (run.sh on Linux)
+├─ ClassShout.Classroom.exe and friends  ← the program plus the assemblies/json it uses
+├─ runtime/                             ← private .NET runtime
+│  ├─ host/fxr/<version>/hostfxr.dll
+│  └─ shared/<framework>/<version>/…
 ├─ 使用说明.txt
-├─ logs/                                ← 运行日志
-└─ app/                                 ← 程序本体（exe 与全部依赖）
+└─ logs/                                ← runtime logs
 ```
 
-Putting the application itself into `app/` is not about looking tidy — it's because **the DLLs
-cannot be given a directory of their own**: .NET's runtime host files (`hostpolicy.dll` /
-`hostfxr.dll` / `coreclr.dll` / `System.Private.CoreLib.dll` …) have to sit next to the exe, and
-they make up more than half of the file count. We tried moving the remaining assemblies into
-`lib\` and rewriting the paths in the `targets` section of `deps.json`; the app crashed outright
-with `hostpolicy.dll not found`. So the layer we can actually sort out is the UI layer.
-Besides forwarding arguments, the startup script also points `CLASSSHOUT_LOG_DIR` at the `logs/`
+**From 1.17.0** the program files sit directly at the extraction root and the runtime moves into
+`runtime/`. This is not simply "moving the framework files of a self-contained publish": that route
+does not work — a self-contained publish writes the framework assemblies as bare file names in its
+`deps.json` (they were meant to sit next to the exe), and once they are moved the host cannot find
+`hostpolicy` and the process dies with `0xC0000135`. For `runtime/shared/...` to be accepted as an
+"installed .NET", it must carry the framework's own `deps.json` / `runtimeconfig.json` / `.version` —
+those three live in the NuGet runtime packs, so `pack.ps1`'s `Install-PrivateRuntime` assembles a
+private .NET from those packs while the publish itself stays framework-dependent.
+
+The price is one environment variable: the startup script must set `DOTNET_ROOT=<root>/runtime`
+before launching the exe, otherwise the host looks for a system-wide .NET. The script also points
+`CLASSSHOUT_LOG_DIR` at `logs/`
 folder beside it.
 
 ## Layering principles

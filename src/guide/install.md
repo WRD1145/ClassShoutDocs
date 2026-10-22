@@ -4,8 +4,8 @@
 
 | 组件 | 跑在哪 | 说明 |
 |---|---|---|
-| 教室端 | 教室里的 Windows 电脑 | 单文件 exe，双击即用，**不需要装 .NET 运行时** |
-| 教师端 | Android 手机 / Windows 电脑 | APK 或单文件 exe |
+| 教室端 | 教室里的 Windows 电脑 | 压缩包，解压即用；运行时在 `runtime/` 下，**不需要装 .NET 运行时** |
+| 教师端 | Android 手机 / Windows 电脑 | APK，或桌面版的压缩包 |
 | 中继服务器 | 任意能上公网的机器 | 只在跨网络时需要；Windows 与 Linux 都有 |
 
 教室端也支持 Linux（发布物里有 `ClassShout.Classroom-linux-x64`），
@@ -21,12 +21,16 @@ pwsh -File scripts/pack.ps1 -IncludeLinuxServer
 ```
 
 产物在 `dist/release/`，脚本会把它按"最终附件名"摆好，并生成 `SHA256SUMS.txt`。
+`-FrameworkDependent` 现在表示**连 `runtime\` 都不带**：体积最小，但目标机上必须先装好
+.NET 10 运行时。
 详细参数见 [构建与打包](/dev/build.html)。
 
 ## 部署教室端
 
 1. 把 `ClassShout.Classroom-win-x64.zip` 解压到一个固定目录，例如 `C:\ClassShout\`，
-   双击里面的**「ClassShout.Classroom.exe 启动.cmd」**即可。
+   然后**双击解压根目录里的「ClassShout.Classroom.exe 启动.cmd」**。
+   **别直接双击 exe**：启动脚本先设好 `DOTNET_ROOT` 再起主程序；不设它，exe 会去找
+   系统里装的那份 .NET，找不到就报 "You must install or update .NET"。
 2. 首次启动 Windows 可能弹防火墙提示，**要勾选「专用网络」并允许** ——
    局域网模式下教师端需要连进来（TCP 45900）并靠 UDP 45901 被发现。
 3. 在界面右侧填**教室名**（例如「三年二班」），它会出现在教师端列表、弹窗和服务器控制台上。
@@ -38,16 +42,17 @@ ClassShout.Classroom/
 ├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Windows）
 ├─ run.sh                               ← Linux 下跑这个
 ├─ 使用说明.txt
-├─ logs/                                ← 运行日志落在这里
-└─ app/                                 ← 程序本体（exe 与全部依赖）
+├─ ClassShout.Classroom.exe             ← 主程序，与它用到的 dll/json 一起就在这一层
+├─ runtime/                             ← 私有 .NET 运行时（host/fxr/<版本> + shared/<框架>/<版本>）
+└─ logs/                                ← 运行日志落在这里
 ```
 
-**为什么程序本体在 `app\` 里、DLL 不能单独再分一个文件夹**：
-.NET 的运行时宿主文件（`hostpolicy.dll` / `hostfxr.dll` / `coreclr.dll` /
-`System.Private.CoreLib.dll` …）**必须与 exe 同级**，而它们占了文件数的一大半；
-把其余程序集挪进 `lib\` 再改写 `deps.json` 会让应用直接崩在
-`hostpolicy.dll not found`（实测过）。所以能收拾的是**界面**：顶层只有启动脚本、
-说明和 `logs\`，两百多个程序文件全部待在 `app\` 里。
+**目标机仍然不需要装 .NET**：运行时就在 `runtime/` 下，启动脚本会先把 `DOTNET_ROOT`
+指着它，再起主程序。程序文件（exe 与它用到的 dll/json）也直接在解压根目录里，
+不再套一层子目录。
+
+`runtime/` **不能删，也不要单独替换** —— 它是随这版程序一起打出来的，单独换一边版本就对不上。
+升级时把新压缩包**整个目录覆盖**过去，运行时跟着一起换。
 
 教室端的数据（教室名、UUID、口令、账号、主题色）不在程序旁边，而在当前 Windows
 账户的用户目录里（`%LOCALAPPDATA%\ClassShout\`）。这是有意为之：程序可能被装在
@@ -60,12 +65,16 @@ ClassShout.Classroom/
 
 **设为开机自启**：教室端 → 设置 → 「后台运行」→ 开机自启。打开后会在启动文件夹里放一个快捷方式。
 
-命令行也能设，教室那台机器不方便点界面时用得上：
+命令行也能设，教室那台机器不方便点界面时用得上。**命令行下同样要先把 `DOTNET_ROOT`
+指到 `runtime\`** —— 启动脚本做的就是这一句：
 
 ```powershell
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-on       # 开启
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-off      # 关闭
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-status   # 查状态
+cd C:\ClassShout\ClassShout.Classroom
+$env:DOTNET_ROOT = "$PWD\runtime"
+
+.\ClassShout.Classroom.exe --autostart-on       # 开启
+.\ClassShout.Classroom.exe --autostart-off      # 关闭
+.\ClassShout.Classroom.exe --autostart-status   # 查状态
 ```
 
 > 需要「无人登录也能跑」或「以最高权限运行」时仍要用**计划任务**（启动文件夹做不到这两点）。
@@ -81,9 +90,19 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 
 首次启动会申请麦克风权限（语音喊话要用）。拒绝也不影响文字与图片喊话。
 
-**Windows**：把 `ClassShout.Teacher-win-x64.zip` 解压到固定目录，双击里面的
-`ClassShout.Teacher.Desktop.exe`。**Android 版与 Windows 版都在这一张卡片里** ——
+**Windows**：把 `ClassShout.Teacher-win-x64.zip` 解压到固定目录，双击**解压根目录里的
+`ClassShout.Teacher.Desktop.exe 启动.cmd`**（同样是"脚本先设 `DOTNET_ROOT` 再起 exe"，
+别直接双击 exe）。**Android 版与 Windows 版都在这一张卡片里** ——
 检查更新时会按你运行的平台挑对应的附件（手机挑 `.apk`、桌面挑那个 zip）。
+
+装好之后连教室：
+
+- **同一局域网**：教师端 →「文字」页 →「同一网络下的教室」→「扫描」→ 点一下扫到的教室，
+  连上之后它出现在下面的「这条发给谁」里；
+- **跨网络**：教师端 →「设备」页 →「通过服务器连接」→ 填服务器地址（见[中继服务器](/guide/relay.html)）。
+
+扫描扫不到、但地址知道时，用「设备」页「通过局域网连接」里那一栏手输 `IP:端口` ——
+扫描搬走之后，那张卡上只剩手输地址这一栏（加一个「连接」按钮），另有一句提示指着下面的扫描入口。
 
 ## 部署中继服务器
 
@@ -98,9 +117,9 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 旧版教室端**不会报错**，只是图片收不到、展示参数会退回它自己的默认值 ——
 所以升级时请把两端一起升。
 
-> **1.10.0 起产物形式变了**：不再是单个 exe，而是压缩包（解压出 `app/` + `logs/` +
-> 启动脚本）。升级方式跟着变成"解压覆盖同一个目录"，还是双击那个启动脚本。
-> 配置都在用户目录里，日志在软件目录下的 `logs/`，覆盖不会丢东西。
+> **1.10.0 起产物形式变了**：不再是单个 exe，而是压缩包（解压出**程序文件 + `runtime/`**
+> + `logs/` + 启动脚本）。升级方式跟着变成"解压覆盖同一个目录"（`runtime/` 一起覆盖），
+> 还是双击那个启动脚本。配置都在用户目录里，日志在软件目录下的 `logs/`，覆盖不会丢东西。
 
 ## 检查更新（以及 GitHub 慢的时候怎么办）
 
@@ -123,11 +142,16 @@ adb install -r dist\release\classshout-teacher-<版本>-universal.apk
 每条也能自己加（名字 / GitHub 还是 Gitee / API 地址 / 仓库 / 下载模板）、自己删；
 内置的删不掉 —— 它们是"一条都不剩"时的兜底。
 
-**连不上多半是代理的问题**，所以代理是显式的一档：跟随系统 / 不使用 / 自己填地址。
-界面下方会显示**实际解析出来的代理**（「系统代理 → http://127.0.0.1:7890」
+**连不上多半是代理的问题**，所以代理是显式的一档。**桌面版三档**：跟随系统 / 不使用 / 自己填地址；
+**Android 上只有两档**：「直连（手机端不检测代理）」与「自己填代理地址」——
+手机上没有"系统代理"这回事（那是桌面上的注册表、环境变量、IE 设置那一套），
+留着那一档只会得到一句"检测不到"，反而让人以为网络出了问题。
+旧配置里存的「跟随系统」在 Android 上读出来就是**直连**。
+
+桌面版界面下方会显示**实际解析出来的代理**（「系统代理 → http://127.0.0.1:7890」
 或「系统没有配置代理（直连）」）—— 一眼能看出是系统代理没读到，还是地址填错了。
 
-> **「跟随系统」直接读 Windows 的系统代理设置**，而不是用 .NET 自带的解析：
+> **桌面版的「跟随系统」直接读 Windows 的系统代理设置**，而不是用 .NET 自带的解析：
 > 后者只要发现任何代理环境变量就会选"只看环境变量"的实现，而它按 URL 的 scheme
 > 取变量（https 请求只看 `HTTPS_PROXY`）。代理软件常常只设了 `HTTP_PROXY`，
 > 于是 https 请求一个都不走代理 —— 表现就是"浏览器能开、应用连不上"。

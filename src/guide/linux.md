@@ -10,8 +10,12 @@
 
 ```bash
 tar xzf ClassShout.Classroom-linux-x64.tar.gz
-./app/ClassShout.Classroom --diagnose
+cd ClassShout.Classroom
+DOTNET_ROOT="$PWD/runtime" ./ClassShout.Classroom --diagnose
 ```
+
+主程序就在解压根目录里，而 `DOTNET_ROOT` 要指到同级的 `runtime/` —— `run.sh` 做的就是这两句
+（先 `cd` 到脚本所在目录，设好 `DOTNET_ROOT`，再起主程序）。
 
 只打印、不起界面，一行一个后端：
 

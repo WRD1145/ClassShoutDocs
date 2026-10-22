@@ -2,7 +2,7 @@
 
 ## 什么时候需要它
 
-- 老师与教室在**同一个 Wi-Fi** 下 → 不需要。教师端打开就会自动发现教室端（UDP 广播）。
+- 老师与教室在**同一个 Wi-Fi** 下 → 不需要。教师端在「文字」页点一次「扫描」就能发现教室端（UDP 广播）。
 - 老师在家里 / 在另一个校区，教室在学校 → 需要。两端都接到同一台中继服务器即可。
 
 链路优先级是**局域网 > 服务器**：同一网段下延迟更低，也不会占用公网带宽。
@@ -29,21 +29,27 @@
 ## 部署
 
 服务器是自包含的（Windows 与 Linux 都有发布物，**1.10.0 起是压缩包而不是单个文件**）。
+**1.17.0 起包里的目录结构变了**：程序文件在解压根目录，运行时在 `runtime/` 下。
 最小做法：
 
 ```bash
 # Linux：解压到 /opt/classshout，--strip-components=1 去掉压缩包里那层目录，
-# 让 app/ 与 logs/ 直接落在 /opt/classshout 下
+# 让程序文件与 logs/ 直接落在 /opt/classshout 下
 sudo mkdir -p /opt/classshout
 sudo tar -xzf ClassShout.RelayServer-linux-x64.tar.gz -C /opt/classshout --strip-components=1
 
 # ⚠ Windows 上打的 tar 不保留 Unix 权限位，解压出来的可执行文件是 0666。
 #   不补这一步，systemd 会报 status=203/EXEC（Permission denied）。
-sudo chmod +x /opt/classshout/app/ClassShout.RelayServer /opt/classshout/run.sh
+sudo chmod +x /opt/classshout/ClassShout.RelayServer /opt/classshout/run.sh
 
 cd /opt/classshout
-./run.sh --urls "http://0.0.0.0:8080"     # 或直接 ./app/ClassShout.RelayServer
+./run.sh --urls "http://0.0.0.0:8080"     # 或：DOTNET_ROOT=$PWD/runtime ./ClassShout.RelayServer
 ```
+
+> 运行时在 `runtime/` 下（私有 .NET，**目标机不用另装**），但宿主必须知道它在哪：
+> `run.sh` 会先设 `DOTNET_ROOT` 再起程序。自己写 systemd 单元时，除了状态文件的那些
+> `Environment=`，还要补一条 `Environment=DOTNET_ROOT=/opt/classshout/runtime`；
+> 少了它，程序会去找系统里装的 .NET，找不到就报 "You must install or update .NET"。
 
 首次启动会在**当前工作目录**生成 `relay-config.json`，里面是管理员账号与随机口令 ——
 控制台登录要用它。**它同时写在启动日志里**，忘了口令就去这两个地方找。
@@ -59,8 +65,8 @@ cd /opt/classshout
 > 以及 `CLASSSHOUT_LOG_DIR`（单元里那条 `Environment=`）指着哪里 ——
 > 路径不对的话，文件会落在程序目录或用户数据目录下。
 
-> 想升级时只覆盖 `app/`：状态文件留在外面（见下），程序与数据谁也不动谁。
-> 服务端默认按"程序所在目录"找状态文件，所以把程序放进子目录之后，
+> 想升级时只覆盖程序文件与 `runtime/`：状态文件留在 `/opt/classshout` 根上（见下），程序与数据谁也不动谁。
+> 服务端默认按"程序所在目录"找状态文件，所以改变了程序位置之后，
 > 要在 systemd 单元里用环境变量显式指定状态路径（见[状态文件](#状态文件)），
 > 否则启动自检会以 `status=78` 拒绝启动，并在日志里写明是哪一项不可用。
 

@@ -18,6 +18,25 @@ Four ways, and which of them show up is decided by the classroom app's settings:
 The reply buttons only follow **the message currently on screen**: the teacher shouts one, and then this
 row appears. With nothing that can be replied to, the whole reply area stays hidden.
 
+## In pop-up-only mode the card can reply too
+
+When the sender picks "Pop-up" (弹窗) as the display mode, the only thing in the classroom is that
+screen-edge card (the big-caption area does not light up; see [display settings](/en/guide/display.html)).
+The reply area in the main window is effectively hidden then, so **the card carries its own set**:
+"Got it" (知道了), the quick replies and "record a voice reply" (录一段语音回复) — still governed by
+the same settings as the table below. Text replies stay in the main window: the card only carries
+buttons and the preset phrasings, there is no input box.
+
+Two small behaviours changed along with it:
+
+- **Tapping a button on the card no longer dismisses it.** It used to be "a tap anywhere closes it",
+  so one tap on "Got it" made the card vanish before anyone could see whether it went out; tapping
+  "record a voice reply" was worse — the recording started and the interface was already gone.
+  Now only **a tap on empty space** closes it;
+- **While the pointer rests on the card it does not auto-dismiss**, and when the pointer leaves the
+  dwell time starts over — nobody should have the card taken away while reading that line, tapping a
+  button or recording a sentence.
+
 ## Whether those four appear is the classroom's decision
 
 It lives in classroom app → Settings → "回复" (replies). Why the classroom side and not the teacher app:

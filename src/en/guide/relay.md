@@ -32,22 +32,27 @@ Both the teacher app and the classroom app have a switch in their network settin
 ## Deployment
 
 The server is self-contained (there are builds for both Windows and Linux, and **from 1.10.0 it is an archive rather than a single file**).
+**From 1.17.0 the layout inside the archive changed**: the program files sit at the extraction root and the runtime in `runtime/`.
 The minimal approach:
 
 ```bash
 # Linux：解压到 /opt/classshout，--strip-components=1 去掉压缩包里那层目录，
-# 让 app/ 与 logs/ 直接落在 /opt/classshout 下
+# 让程序文件与 logs/ 直接落在 /opt/classshout 下
 sudo mkdir -p /opt/classshout
 sudo tar -xzf ClassShout.RelayServer-linux-x64.tar.gz -C /opt/classshout --strip-components=1
 
 # ⚠ Windows 上打的 tar 不保留 Unix 权限位，解压出来的可执行文件是 0666。
 #   不补这一步，systemd 会报 status=203/EXEC（Permission denied）。
-sudo chmod +x /opt/classshout/app/ClassShout.RelayServer /opt/classshout/run.sh
+sudo chmod +x /opt/classshout/ClassShout.RelayServer /opt/classshout/run.sh
 
 cd /opt/classshout
-./run.sh --urls "http://0.0.0.0:8080"     # 或直接 ./app/ClassShout.RelayServer
+./run.sh --urls "http://0.0.0.0:8080"     # or: DOTNET_ROOT=$PWD/runtime ./ClassShout.RelayServer
 ```
 
+> The runtime lives in `runtime/` (a private .NET, **nothing needs to be installed on the target machine**), but the host
+> has to be told where it is: `run.sh` sets `DOTNET_ROOT` before starting the program. If you write the systemd unit
+> yourself, add `Environment=DOTNET_ROOT=/opt/classshout/runtime` next to the state-file `Environment=` lines; without it
+> the program looks for a system-wide .NET and reports "You must install or update .NET".
 The first start generates `relay-config.json` in the **current working directory**, holding the administrator account and a random password —
 you need it to sign in to the console. **It is also written to the startup log**, so if you forget the password, look in those two places.
 Logs live in `logs/` (`run.sh` points `CLASSSHOUT_LOG_DIR` at that sibling directory) — one file per day,
@@ -62,7 +67,7 @@ otherwise a single evening would fill the disk, and none of it is worth anything
 > and where `CLASSSHOUT_LOG_DIR` (the `Environment=` line in the unit) points —
 > if the path is wrong, the files land in the app folder or the user data folder.
 
-> To upgrade, overwrite only `app/`: the state files stay outside (see below), so program and data never touch each other.
+> To upgrade, overwrite only the program files and `runtime/`: the state files stay at the `/opt/classshout` root (see below), so program and data never touch each other.
 > By default the server looks for state files in "the directory the program lives in", so once you put the program in a subdirectory,
 > you must set the state paths explicitly with environment variables in the systemd unit (see [state files](#state-files)),
 > otherwise the startup self-check refuses to start with `status=78` and says in the log which item is unavailable.

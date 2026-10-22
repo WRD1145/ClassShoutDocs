@@ -26,17 +26,24 @@ tools/
 ```
 ClassShout.Classroom/
 ├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Linux 是 run.sh）
+├─ ClassShout.Classroom.exe 等          ← 主程序与它用到的程序集 / json
+├─ runtime/                             ← 私有 .NET 运行时
+│  ├─ host/fxr/<版本>/hostfxr.dll
+│  └─ shared/<框架>/<版本>/…
 ├─ 使用说明.txt
-├─ logs/                                ← 运行日志
-└─ app/                                 ← 程序本体（exe 与全部依赖）
+└─ logs/                                ← 运行日志
 ```
 
-程序本体放进 `app/` 不是为了好看，而是**DLL 没法再单独分一个目录**：
-.NET 的运行时宿主文件（`hostpolicy.dll` / `hostfxr.dll` / `coreclr.dll` /
-`System.Private.CoreLib.dll` …）必须与 exe 同级，而它们占了文件数的一大半。
-试过把其余程序集挪进 `lib\` 再改写 `deps.json` 里 `targets` 段的路径，
-应用直接崩在 `hostpolicy.dll not found`。所以能收拾的是界面那一层。
-启动脚本除了转发参数，还会把 `CLASSSHOUT_LOG_DIR` 指到同级的 `logs/`。
+**1.17.0 起**程序文件直接待在解压根目录，运行时收进 `runtime/`。
+这不是"把自包含发布物的框架文件挪个地方"——那条路走不通：自包含发布物的
+`deps.json` 把框架程序集写成纯文件名（它们本来就和 exe 挤在一层），挪走后宿主
+找不到 `hostpolicy`，进程直接 `0xC0000135`。而 `runtime/shared/...` 要被宿主认作
+"装好的 .NET"，必须带上框架自己的 `deps.json` / `runtimeconfig.json` / `.version` ——
+这三样正好在 NuGet 的运行时包里，所以 `pack.ps1` 的 `Install-PrivateRuntime`
+是拿运行时包**拼一份私有 .NET**，发布物本身仍是"依赖框架"的。
+
+代价是一个环境变量：启动脚本要先设 `DOTNET_ROOT=<根>/runtime` 再起 exe，
+否则宿主会去找系统里装的那份 .NET。脚本同时把 `CLASSSHOUT_LOG_DIR` 指到同级的 `logs/`。
 
 ## 分层原则
 

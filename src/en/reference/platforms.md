@@ -64,11 +64,17 @@ machines".
 
 | Platform | RID / artifact | Notes |
 |---|---|---|
-| Classroom app | `win-x64` → `ClassShout.Classroom-win-x64.zip`; `linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | Self-contained; no .NET runtime has to be installed |
-| Teacher app (desktop) | `win-x64` → `ClassShout.Teacher-win-x64.zip` | Self-contained; **no Linux package** |
+| Classroom app | `win-x64` → `ClassShout.Classroom-win-x64.zip`; `linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | Program files at the root, the private runtime under `runtime/`; no .NET runtime has to be installed |
+| Teacher app (desktop) | `win-x64` → `ClassShout.Teacher-win-x64.zip` | The same shape (root + `runtime/`); **no Linux package** |
 | Teacher app (phone) | `android-arm64` + `android-x64` → `classshout-teacher-<version>-universal.apk` | **The APK is self-contained**: the .NET runtime and the assemblies are inside the package, and nothing else has to be installed on the phone |
 | Relay server | `win-x64` → zip; `linux-x64` → `ClassShout.RelayServer-linux-x64.tar.gz` | After unpacking the Linux package, `chmod +x` first — a tar produced on Windows does not keep the executable bit |
 
+- The classroom, desktop teacher and relay server archives all unpack to the same shape:
+  **program files at the root, the runtime under `runtime/`**, plus `logs/` and a launch script.
+  The launch script sets `DOTNET_ROOT` before starting the program, so "no .NET to install"
+  rests on that directory (delete it and the program will not start).
+  `pack.ps1 -FrameworkDependent` is the exception: not even `runtime/` is included — the smallest
+  size, but the target machine has to have the .NET 10 runtime installed;
 - The universal APK carries both ABIs and is about 63 MB; `pack.ps1 -SplitApk` additionally produces one
   package per ABI, about 32 MB each. Most of the size is the managed assemblies with trimming turned off,
   a trade-off made so that Avalonia's XAML reflection keeps working;

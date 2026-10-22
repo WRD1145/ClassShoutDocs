@@ -10,8 +10,8 @@ address (for example `https://relay.example.com`) → "Connect to server" (连�
 On the first connection it registers on the server and generates a password, and this
 classroom's **UUID** and **password** appear in the interface, each with a one-click copy.
 
-> A classroom on the same LAN does not need this step: the teacher app discovers it
-> automatically as soon as it opens.
+> A classroom on the same LAN does not need this step: one tap on "Scan" (扫描) on the "Text" (文字)
+> page finds it (see step 4).
 
 **Both of these are read-only in the classroom app**: you can see them and copy them, but
 there is no "Regenerate" (重新生成) button.
@@ -52,7 +52,17 @@ The share-link path is the least work: the teacher opens the link (or pastes it 
 teacher app), those classes are added to their account, and after that one tap binds them.
 See [share link](/en/guide/share.html).
 
-## 4. The teacher binds a classroom
+## 4. The teacher connects to a classroom
+
+**Same LAN** (the common case): teacher app → "Text" (文字) page → "Classrooms on this network"
+(同一网络下的教室) → "Scan" (扫描) → tap a classroom that was found and it connects, then shows up in
+"Who is this going to" (这条发给谁) below. The scan and "who is this going to" sit on the same page,
+one above the other, because **the classrooms the scan finds are exactly the ones the shout goes to
+next** — having an entry point in two places, with a trip back to the other page to connect after
+scanning, is simply redundant. If the scan finds nothing but you know the address: "Devices" (设备)
+page → "Connect over the LAN" (通过局域网连接) → type `IP:port` → "Connect" (连接).
+
+**Across networks, or managed by account**:
 
 - Classes that arrived through an authorization or a share link: just tap them in "Classes
   assigned by admin" (管理员分配的班级);

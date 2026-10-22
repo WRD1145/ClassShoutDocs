@@ -7,14 +7,20 @@ Find your symptom.
 1. Are the two devices on the same subnet (some campus networks isolate clients);
 2. Does the classroom computer's firewall allow **TCP 45900 / UDP 45901** (on first launch you have to tick "Private network");
 3. Did the classroom app close its window without staying in the tray — that amounts to quitting;
-4. Try a manual connection with `IP:port`: if it connects, the problem is in the implementation; if it doesn't, the problem is the network.
+4. Tap "Scan" (扫描) on the **"Text" (文字) page**: the "Classrooms on this network" (同一网络下的教室) card
+   sits right above "Who is this going to" (这条发给谁); tap a classroom that was found and it connects and
+   immediately shows up in that list below (there is no scan button on the Devices page);
+5. If the scan finds nothing but you know the address, type `IP:port` into "Connect over the LAN"
+   (通过局域网连接) on the Devices page (the classroom app shows its own address in its top bar). If that
+   connects, broadcasts are being blocked; if it doesn't, the problem is the network.
 
 ## "SSL certificate problem" when connecting to the server
 
 The server is using a self-signed certificate (the one stood up temporarily at a school, or the one on an intranet
 IP), while both ends only accept a valid certificate by default.
 
-In the teacher app: "设备" (devices) → "中继服务器"; in the classroom app: "设置" (settings) → "跨局域网喊话".
+In the teacher app: "设备" (devices) → the "通过服务器连接" (connect through a server) card; in the
+classroom app: "设置" (settings) → "跨局域网喊话".
 Both have **"允许不信任的 TLS 连接"** (accept untrusted TLS connections): switch it on and press "sign in"
 (or "connect to the server") again.
 

@@ -4,8 +4,8 @@
 
 | Component | Runs on | Notes |
 |---|---|---|
-| Classroom app | The Windows PC in the classroom | Single-file exe, double-click and go, **no .NET runtime installation required** |
-| Teacher app | Android phone / Windows PC | APK or single-file exe |
+| Classroom app | The Windows PC in the classroom | An archive: unpack and go; the runtime sits in `runtime/`, so **no .NET runtime installation required** |
+| Teacher app | Android phone / Windows PC | APK, or an archive for the desktop build |
 | Relay server | Any machine that can reach the public internet | Only needed across networks; available for both Windows and Linux |
 
 The classroom app supports Linux too (the release includes `ClassShout.Classroom-linux-x64`),
@@ -23,12 +23,17 @@ pwsh -File scripts/pack.ps1 -IncludeLinuxServer
 
 The artifacts land in `dist/release/`; the script arranges them under their "final attachment
 names" and generates `SHA256SUMS.txt`.
+`-FrameworkDependent` now means **not even `runtime\` is included**: the smallest possible size,
+but the target machine has to have the .NET 10 runtime installed first.
 See [Build and packaging](/en/dev/build.html) for the full set of options.
 
 ## Deploying the classroom app
 
 1. Unzip `ClassShout.Classroom-win-x64.zip` into a fixed directory, for example `C:\ClassShout\`,
-   then double-click **`ClassShout.Classroom.exe 启动.cmd`** inside it.
+   then **double-click `ClassShout.Classroom.exe 启动.cmd` in the unpacked root**.
+   **Do not double-click the exe directly**: the launch script sets `DOTNET_ROOT` before starting
+   the program, and without it the exe looks for the .NET installed on the system and fails with
+   "You must install or update .NET" when it cannot find one.
 2. On first launch Windows may show a firewall prompt, and **you have to tick "Private networks"（专用网络）and allow it** —
    in LAN mode the teacher app needs to connect in (TCP 45900) and to be discovered over UDP 45901.
 3. On the right-hand side of the interface fill in the **classroom name** (for example "Grade 3 Class 2");
@@ -41,17 +46,19 @@ ClassShout.Classroom/
 ├─ ClassShout.Classroom.exe 启动.cmd    ← 双击这个（Windows）
 ├─ run.sh                               ← Linux 下跑这个
 ├─ 使用说明.txt
-├─ logs/                                ← 运行日志落在这里
-└─ app/                                 ← 程序本体（exe 与全部依赖）
+├─ ClassShout.Classroom.exe             ← 主程序，与它用到的 dll/json 一起就在这一层
+├─ runtime/                             ← 私有 .NET 运行时（host/fxr/<版本> + shared/<框架>/<版本>）
+└─ logs/                                ← 运行日志落在这里
 ```
 
-**Why the program itself sits in `app\` and the DLLs can't be split into a separate folder**:
-the .NET runtime host files (`hostpolicy.dll` / `hostfxr.dll` / `coreclr.dll` /
-`System.Private.CoreLib.dll` …) **must sit next to the exe**, and they account for more than
-half of the file count; moving the remaining assemblies into `lib\` and rewriting `deps.json`
-makes the app crash outright with `hostpolicy.dll not found` (we tested it). So the only thing
-that can be tidied is the **face of the release**: the top level holds just the launch script,
-the readme and `logs\`, while the two hundred–odd program files all stay inside `app\`.
+**The target machine still does not need .NET installed**: the runtime sits in `runtime/`, and the
+launch script points `DOTNET_ROOT` at it before starting the program. That is also why the program
+files (the exe and the dll/json it uses) sit directly in the unpacked root, with no extra directory
+level in between.
+
+You **must not delete `runtime/` and must not replace it on its own** — it is built together with
+this version of the program, and swapping just one side leaves the versions mismatched. To upgrade,
+**overwrite the whole directory** with the new archive, runtime included.
 
 The classroom app's data (classroom name, UUID, password, account, theme colour) does not live
 next to the program but in the user folder of the current Windows account
@@ -69,12 +76,16 @@ ended up at is shown under "About"（关于）on the settings page.
 "Start with Windows"（开机自启）. Turning it on drops a shortcut into the Startup folder.
 
 You can set it from the command line as well, which comes in handy when clicking through the
-interface on that classroom machine is inconvenient:
+interface on that classroom machine is inconvenient. **From the command line you also have to point
+`DOTNET_ROOT` at `runtime\`** — that is exactly the line the launch script runs:
 
 ```powershell
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-on       # 开启
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-off      # 关闭
-.\ClassShout.Classroom\app\ClassShout.Classroom.exe --autostart-status   # 查状态
+cd C:\ClassShout\ClassShout.Classroom
+$env:DOTNET_ROOT = "$PWD\runtime"
+
+.\ClassShout.Classroom.exe --autostart-on       # 开启
+.\ClassShout.Classroom.exe --autostart-off      # 关闭
+.\ClassShout.Classroom.exe --autostart-status   # 查状态
 ```
 
 > When you need it to "run without anyone logged in" or "run with the highest privileges", you
@@ -94,9 +105,24 @@ On first launch it asks for microphone permission (voice shouts need it). Refusi
 affect text and image shouts.
 
 **Windows**: unzip `ClassShout.Teacher-win-x64.zip` into a fixed directory and double-click
-`ClassShout.Teacher.Desktop.exe` inside it. **The Android and Windows builds both live in this
-one card** — when checking for updates it picks the attachment that matches the platform you are
-running on (the phone takes the `.apk`, the desktop takes that zip).
+**`ClassShout.Teacher.Desktop.exe 启动.cmd` in the unpacked root** (the same "script sets
+`DOTNET_ROOT`, then starts the exe" story — do not double-click the exe itself).
+**The Android and Windows builds both live in this one card** — when checking for updates it picks
+the attachment that matches the platform you are running on (the phone takes the `.apk`, the desktop
+takes that zip).
+
+Connecting to a classroom once it is installed:
+
+- **Same LAN**: teacher app → "Text" (文字) page → "Classrooms on this network" (同一网络下的教室)
+  → "Scan" (扫描) → tap a classroom that was found, and once connected it shows up in
+  "Who is this going to" (这条发给谁) below;
+- **Across networks**: teacher app → "Devices" (设备) page → "Connect through a server"
+  (通过服务器连接) → fill in the server address (see [relay server](/en/guide/relay.html)).
+
+When the scan finds nothing but you know the address, type `IP:port` into the field on the
+"Connect over the LAN" (通过局域网连接) card on the Devices page — with the scan moved out, that card
+keeps just the typed-address field (and its Connect button), plus a line of text pointing at the scan
+below.
 
 ## Deploying the relay server
 
@@ -113,9 +139,9 @@ New features (images, display parameters, scheduling, share links) depend on the
 both ends. An old classroom app **will not report an error**; it simply never receives images,
 and display parameters fall back to its own defaults — so please upgrade both ends together.
 
-> **From 1.10.0 the artifacts changed shape**: no longer a single exe, but an archive (unzipping
-> to `app/` + `logs/` + a launch script). Upgrading therefore becomes "unzip over the same
-> directory", still double-clicking that launch script.
+> **From 1.10.0 the artifacts changed shape**: no longer a single exe, but an archive (unpacking
+> to **the program files + `runtime/`** + `logs/` + a launch script). Upgrading therefore becomes
+> "unzip over the same directory" (`runtime/` included), still double-clicking that launch script.
 > Settings all live in the user folder and logs in `logs/` under the app folder, so overwriting
 > loses nothing.
 
@@ -143,17 +169,23 @@ fastest one. You can also add your own entries (name / GitHub or Gitee / API URL
 download template) and delete them; the built-in ones cannot be deleted — they are the fallback
 for when "not a single one is left".
 
-**Failing to connect is usually a proxy problem**, so the proxy is an explicit choice: follow the
-system / don't use one / enter an address yourself. Below it the interface shows the **proxy it
-actually resolved** ("System proxy → http://127.0.0.1:7890" or "No proxy configured on the system
-(direct connection)") — so you can tell at a glance whether the system proxy was not picked up, or
-whether the address was typed wrong.
+**Failing to connect is usually a proxy problem**, so the proxy is an explicit choice. **The desktop
+build offers three**: follow the system / don't use one / enter an address yourself; **on Android
+there are only two**: "Direct (the phone does not detect a proxy)"（直连（手机端不检测代理））and
+"Enter a proxy address yourself"（自己填代理地址）— a phone has no such thing as a "system proxy"
+(that is the registry / environment variables / IE settings on a desktop), and keeping that option
+would only ever answer "not detected", making it look as if the network were broken. An old "follow
+system" setting reads as **direct** on Android.
 
-> **"Follow system" reads the Windows system proxy settings directly**, instead of using .NET's
-> own resolution: the latter switches to an "environment variables only" implementation as soon as
-> it finds any proxy environment variable, and that one picks the variable by the URL's scheme
-> (https requests look only at `HTTPS_PROXY`). Proxy tools often set only `HTTP_PROXY`, so not a
-> single https request goes through the proxy — which shows up as "the browser can open it, the
+On the desktop build the interface shows below it the **proxy it actually resolved** ("System proxy
+→ http://127.0.0.1:7890" or "No proxy configured on the system (direct connection)") — so you can
+tell at a glance whether the system proxy was not picked up, or whether the address was typed wrong.
+
+> **On the desktop build, "Follow system" reads the Windows system proxy settings directly**, instead
+> of using .NET's own resolution: the latter switches to an "environment variables only" implementation
+> as soon as it finds any proxy environment variable, and that one picks the variable by the URL's
+> scheme (https requests look only at `HTTPS_PROXY`). Proxy tools often set only `HTTP_PROXY`, so not
+> a single https request goes through the proxy — which shows up as "the browser can open it, the
 > app can't connect". If your proxy is unusual (listening on socks only, say), just choose
 > "Enter a proxy address yourself"（自己填代理地址）and write `http://127.0.0.1:7890` or
 > `socks5://127.0.0.1:1080`.
