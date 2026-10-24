@@ -15,9 +15,41 @@ in the classroom is there for the students to look at, so settings don't take ov
 | Shout pop-ups (喊话弹窗) | See [on-screen pop-ups](/en/guide/notification.html) |
 | Running in the background (后台运行) | Whether closing the window hides it to the tray, and whether it starts automatically on boot |
 | Online teacher apps (在线教师端) | The list of teacher apps currently connected to this classroom |
-| Personalization (个性化) | Theme color (8 presets, or type in your own `#RRGGBB`) |
+| Personalization (个性化) | Light/dark (follow the system / light / dark) and theme color (8 presets, or type in your own `#RRGGBB`) |
 | Version and updates (版本与更新) | Check for updates (检查更新), mirror (see [Install and deployment](/en/guide/install.html)) |
 | About (关于) | Version number, runtime environment, diagnostics, developer mode |
+
+## Light/dark: follow the system / light / dark
+
+The "Personalization" (个性化) card now holds two things: on top, three radio buttons for "Light/dark"
+(明暗) — follow the system, light, dark; below them, the theme color swatches that were there before
+(8 presets, or type in your own `#RRGGBB`). In the teacher app it is the same card on the "Devices" (设备)
+page, with the same contents.
+
+The default is **follow the system**. This is a change from older versions: light/dark used to be
+hard-coded to light in `App.axaml`, so a machine whose OS is in dark mode still showed the light theme,
+and there was nowhere in the app to change it. Such a machine now starts dark; to get the old look back,
+pick "Light" (浅色) once and it is remembered from then on.
+
+Changes apply immediately, with no restart. "Follow the system" really does follow the system: when the
+OS switches between dark and light, the app switches with it on the spot, without going back into
+settings to tap anything again.
+
+### Why the default is now "follow the system"
+
+Hard-coding light was originally about readability for classroom projection and phone screens in bright
+light — that reasoning has not changed, the problem was the "hard-coded" part: the OS was already dark,
+the app stayed bright, and the user could not change it. So the default is now follow the system, handing
+the choice back; the sentence "light is clearer for projection and bright light" stays as a one-line hint
+under the picker instead of being decided on everyone's behalf.
+
+Both `Theme` and `SeedColor` live in `appearance.json`, and the classroom app and the teacher app
+(Android and desktop alike) use the same format, so the choice survives a restart. Field details are in
+[Config files at a glance](/en/reference/config-files.html).
+
+> What changes is not just the background. The light and the dark palette are both derived from the one
+> theme color, so switching light/dark also switches primary, containers, outlines and text; conversely,
+> changing the theme color changes both palettes, without setting them twice.
 
 ## Where developer mode is
 

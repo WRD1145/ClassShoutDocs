@@ -19,7 +19,7 @@ machine should have their own separate identities.
 | `classroom-stt.json` | The transcription endpoint address and **key** | **Yes** (key) |
 | `classroom-reply.json` | Reply settings (quick replies, "got it", the text/voice switches, the voice time limit) | No |
 | `settings-lock.json` | The PIN's derived value and salt, and which items are protected | **Yes** (derived value, no plaintext) |
-| `appearance.json` | Theme color (both apps share the same format) | No |
+| `appearance.json` | Theme color and light/dark (both apps share the same format, see below) | No |
 
 ### `classroom-reply.json`
 
@@ -67,10 +67,29 @@ the same values as the placeholders. A `{...}` that is not recognised is left as
 | `teacher-calls.json` | Call templates (the sets assembled from components), plus random calling's range and cooldown (group / gender / count / decay minutes) | No |
 | `teacher-phrases.json` | Quick phrases (the row of one-tap phrases on the text page) | No |
 | `shout-history.json` | The content of the last 100 shouts | No |
-| `appearance.json` | Theme color | No |
+| `appearance.json` | Theme color and light/dark | No |
 | `developer.json` | The developer mode switch (unlocked by tapping the version number 10 times in a row) | No |
 | `update.json` | Check-for-updates settings (mirror list, proxy, the result of the last check) | No |
 | `log.json` | Log verbosity (**both apps share the same format**, see below) | No |
+
+## Personalization (`appearance.json`)
+
+The theme color and the light/dark choice both live in this one file, and both apps use the same format
+(the teacher app uses the same one on Android and on desktop). Key names are still PascalCase; a
+lowercase `theme` is treated as an unknown field and skipped — the app does not report an error, the
+change just has no effect.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `SeedColor` | String | The seed for the theme color, `#RRGGBB`. Both the light and the dark palette are derived from it |
+| `Theme` | Integer | Light/dark: `0` follow the system (default), `1` light, `2` dark |
+
+An out-of-range `Theme` value (say, hand-edited to `3`) is treated as `0`, follow the system — a corrupted
+setting should not leave the interface in a palette that is hard to read.
+
+> Light/dark changes the whole palette, not just the background: primary, containers, outlines and text
+> all switch with it, because light and dark are two palettes derived from the same `SeedColor`. To change
+> only the colour, edit `SeedColor` in one place and both palettes follow.
 
 ## Runtime logs
 
