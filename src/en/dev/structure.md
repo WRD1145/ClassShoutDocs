@@ -48,6 +48,8 @@ before launching the exe, otherwise the host looks for a system-wide .NET. The s
 `CLASSSHOUT_LOG_DIR` at `logs/`
 folder beside it.
 
+The same packaging and publishing runs automatically after every merge to `main`; see [automatic releases](/en/dev/ci.html).
+
 ## Layering principles
 
 - **Core does not depend on Avalonia.** As soon as everything unrelated to the UI — protocol,

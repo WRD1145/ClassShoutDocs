@@ -45,6 +45,8 @@ ClassShout.Classroom/
 代价是一个环境变量：启动脚本要先设 `DOTNET_ROOT=<根>/runtime` 再起 exe，
 否则宿主会去找系统里装的那份 .NET。脚本同时把 `CLASSSHOUT_LOG_DIR` 指到同级的 `logs/`。
 
+合并到 `main` 之后，同样的打包与发布会自动跑一遍，见[自动发布](/dev/ci.html)。
+
 ## 分层原则
 
 - **Core 不依赖 Avalonia**。协议、音频工具、配置读写这些与界面无关的东西一放进去，

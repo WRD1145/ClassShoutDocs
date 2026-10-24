@@ -49,7 +49,7 @@ export const enSidebar = sidebar({
       text: "Development",
       icon: "fa-solid fa-code",
       collapsible: false,
-      children: ["README.md", "structure.md", "build.md", "verify.md"],
+      children: ["README.md", "structure.md", "build.md", "ci.md", "verify.md"],
     },
   ],
 
