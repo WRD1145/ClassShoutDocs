@@ -14,6 +14,41 @@ if neither is there, switch to the online Edge voice in settings, otherwise the 
 For what the tray, notifications, playback and recording each need, see
 [the classroom app on Linux](/en/guide/linux.html).
 
+## System requirements
+
+| Platform | Minimum | Runs |
+|---|---|---|
+| Windows (x64) | **Windows 10 1607** or later (Windows 11 included) | Classroom app, desktop teacher app, relay server |
+| Linux x64 | A 64-bit distribution; the classroom app needs an X11 or Wayland session | Classroom app, relay server (**no teacher app**) |
+| Android | Phone or tablet, arm64 or x64 | Teacher app |
+
+The Windows row is a hard floor, not a "recommended configuration": the apps are built on **.NET 10**,
+and .NET 10 itself does not support anything older than Windows 10 1607. For why the Windows 7 machines
+common in classrooms cannot run them, see the next section.
+
+### Why Windows 7 is not supported
+
+**.NET 10's runtime never recognised Windows 7 / 8.1 to begin with.** Microsoft dropped both from the
+supported OS lists when .NET 7 shipped (.NET 6 was the last release that still listed Windows 7 SP1,
+and .NET 6 itself has been out of support since November 2024). So on Windows 7 the **.NET host fails
+before any of our code runs** — typically with "无法定位程序输入点", or "The procedure entry point ...
+could not be located" on an English system. It is not a configuration problem, and no setting turns it on.
+
+**Nor is it a one-line change to "add Win7".** The UI stack is FluentAvalonia 2.5, which ships **only
+`net10.0` assets**; supporting Windows 7 would mean replacing that component library, retargeting to
+.NET Framework 4.8 (the last runtime that runs on Windows 7) or to the EOL .NET 6, and rewriting the
+parts that rely on .NET Core-only APIs — the TLS/HTTP layer, for instance, uses `SocketsHttpHandler`
+and `SslClientAuthenticationOptions`, and neither exists on .NET Framework. That is a separate branch,
+not a build option.
+
+**From v1.19.1 the packaged Windows launcher checks the OS version first** (the script ending in
+`启动.cmd`, for example `ClassShout.Classroom.exe 启动.cmd`): on anything below Windows 10 it
+prints a short explanation and exits, instead of letting the .NET host crash with an unreadable error.
+
+> [!tip]
+> An old classroom PC either gets Windows 10 / 11 put on it, or is replaced by a cheap x64 Linux box —
+> the Linux classroom build needs no .NET either (see [the classroom app on Linux](/en/guide/linux.html)).
+
 ## Packaging (from source)
 
 ```powershell

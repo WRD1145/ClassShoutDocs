@@ -13,6 +13,39 @@
 没有的话建议在设置里改用 Edge 在线语音，否则教室里不会出声。
 托盘、通知、播放与录音各自的依赖见 [Linux 上的教室端](/guide/linux.html)。
 
+## 系统要求
+
+| 平台 | 最低要求 | 跑什么 |
+|---|---|---|
+| Windows（x64） | **Windows 10 1607** 或更高（Windows 11 也算） | 教室端、教师端桌面版、中继服务器 |
+| Linux x64 | 64 位发行版；教室端要有 X11 或 Wayland 会话 | 教室端、中继服务器（**没有教师端**） |
+| Android | 手机或平板，arm64 或 x64 | 教师端 |
+
+Windows 那一行不是"建议配置"，是硬门槛：程序建立在 **.NET 10** 上，而 .NET 10 本身不支持
+Windows 10 1607 以前的系统。教室里常见的 Windows 7 机器为什么不行，见下一节。
+
+### 为什么不支持 Windows 7
+
+**.NET 10 的运行时从一开始就不认 Windows 7 / 8.1。** 微软在 .NET 7 发布时把这两个系统从支持列表里
+拿掉了（.NET 6 是最后一个还列着 Windows 7 SP1 的版本，而 .NET 6 本身在 2024 年 11 月已经停止支持）。
+所以在 Windows 7 上，**.NET 主机在跑到我们的代码之前就失败了**，典型报错是
+「无法定位程序输入点」（英文系统上是 "The procedure entry point ... could not be located"）。
+这不是配置问题，也没有哪个设置能把它打开。
+
+**也不是"加一行 Win7 支持"的事。** 界面用的 FluentAvalonia 2.5 只发 `net10.0` 的程序集；
+要支持 Windows 7，得先换掉这个组件库，再把目标框架改到 .NET Framework 4.8（最后一个能在
+Windows 7 上跑的运行时）或已经停止支持的 .NET 6，然后重写那些只存在于 .NET Core 里的 API ——
+比如 TLS/HTTP 这一层用的 `SocketsHttpHandler` 与 `SslClientAuthenticationOptions`，
+在 .NET Framework 上一个都没有。这是一个单独的分支，不是一个构建选项。
+
+**从 v1.19.1 起，发布包里的 Windows 启动脚本会先查系统版本**（也就是解压出来那个以
+「启动.cmd」结尾的脚本，例如 `ClassShout.Classroom.exe 启动.cmd`）：低于 Windows 10 时
+先打印一段说明再退出，而不是让 .NET 主机崩在一句看不懂的报错上。
+
+> [!tip]
+> 教室里的旧机器可以装 Windows 10 / 11，也可以换一台便宜的 x64 Linux 小主机 ——
+> Linux 的教室端同样不需要装 .NET（见 [Linux 上的教室端](/guide/linux.html)）。
+
 ## 打包（从源码）
 
 ```powershell

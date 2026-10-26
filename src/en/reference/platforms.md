@@ -4,10 +4,14 @@ There are four ways to run ClassShout, and they are not symmetrical:
 
 | Platform | What exists on that machine |
 |---|---|
-| Windows x64 | Teacher app (desktop) + classroom app + relay server |
+| Windows 10 1607+ (x64) | Teacher app (desktop) + classroom app + relay server |
 | Linux x64 | Classroom app + relay server (**no teacher app**) |
 | Android (arm64 + x64) | Teacher app (**no classroom app**) |
 | Web console (WebUI) | The relay server's own browser console — nothing to install |
+
+Every mention of Windows on this page means **Windows 10 1607 or later (Windows 11 included)**;
+Windows 7 / 8.1 cannot run these apps — for why, and for the launcher's version check, see the
+"System requirements" section of [Installation and deployment](/en/guide/install.html).
 
 ## How to read this table
 
