@@ -11,7 +11,7 @@
 
 | 文件 | 内容 | 含凭据 |
 |---|---|---|
-| `classroom.json` | 教室名、UUID、口令、服务器地址，以及「允许不信任的 TLS 连接」 | **是**（口令） |
+| `classroom.json` | 教室名、UUID、口令、服务器地址、「启动时自动连接」，以及「允许不信任的 TLS 连接」 | **是**（口令） |
 | `classroom-notification.json` | 弹窗设置与喊话默认展示参数 | 否 |
 | `classroom-speech.json` | 朗读设置（引擎、音色、音量、语速） | 否 |
 | `classroom-stt.json` | 语音转文字的接口地址与**密钥** | **是**（密钥） |

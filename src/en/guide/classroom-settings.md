@@ -19,6 +19,21 @@ in the classroom is there for the students to look at, so settings don't take ov
 | Version and updates (版本与更新) | Check for updates (检查更新), mirror (see [Install and deployment](/en/guide/install.html)) |
 | About (关于) | Version number, runtime environment, diagnostics, developer mode |
 
+## Connecting to the relay server on startup
+
+The classroom PC is switched on every morning and nobody walks over to press "connect to the server"; and whenever it is
+not connected, that lesson's shouts quietly go nowhere — with no hint in the classroom at all. So after **one successful
+connection** the app remembers it: from then on every start connects by itself.
+
+The switch lives in the relay card (**启动时自动连接**, "connect on startup"). It turns itself on after the first
+successful connection; turn it off there if you really never want it.
+
+Pressing "disconnect" by hand does **not** turn it off: that only means "not this time" (a network being serviced, say),
+and the next start connects again.
+
+A failed attempt shows no dialog — the reason lands in the log and on that card, exactly as with a manual connect.
+The connection starts after the window is up rather than blocking startup: waiting for the server would leave the
+classroom app blank for a few seconds, which looks like a hang.
 ## Light/dark: follow the system / light / dark
 
 The "Personalization" (个性化) card now holds two things: on top, three radio buttons for "Light/dark"
