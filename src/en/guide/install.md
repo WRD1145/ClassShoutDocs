@@ -68,8 +68,8 @@ Each Windows app ships two files; pick one.
 
 | File | Form | Good for |
 |---|---|---|
-| `ClassShout.Classroom-win-x64.zip`<br>`ClassShout.Teacher-win-x64.zip` | **Portable (self-contained / no dependencies)** | Leaving nothing behind, or carrying it on a USB stick / network share. Unzip to use, delete the folder to remove |
-| `ClassShout.Classroom-win-x64-setup.exe`<br>`ClassShout.Teacher-win-x64-setup.exe` | **Installer (which is also the updater)** | The PC that lives in the classroom: install once, then a shortcut opens it — no "remember to double-click the launcher script" |
+| `ClassShout.Classroom-win-x64.zip`<br/>`ClassShout.Teacher-win-x64.zip` | **Portable (self-contained / no dependencies)** | Leaving nothing behind, or carrying it on a USB stick / network share. Unzip to use, delete the folder to remove |
+| `ClassShout.Classroom-win-x64-setup.exe`<br/>`ClassShout.Teacher-win-x64-setup.exe` | **Installer (which is also the updater)** | The PC that lives in the classroom: install once, then a shortcut opens it — no "remember to double-click the launcher script" |
 
 The content is identical (self-contained; the target machine needs no .NET). What differs is **the layout**:
 
@@ -78,7 +78,7 @@ The content is identical (self-contained; the target machine needs no .NET). Wha
 
 ### Using the installer (recommended for classrooms)
 
-Run `setup.exe` → it asks where to install (press Enter for `%LOCALAPPDATA%\ClassShout\<app>`) → offers to start it.
+Run `setup.exe` → it asks where to install (press Enter for `%LOCALAPPDATA%\ClassShout\app`) → offers to start it.
 **No administrator rights needed**: it installs under the current user, and uninstalling goes through
 Settings → Apps → Installed apps.
 
@@ -90,7 +90,7 @@ Settings → Apps → Installed apps.
 
 ### Using the portable build
 
-Unzip anywhere and double-click "<program> 启动.cmd" inside. **Do not double-click the exe directly**: without
+Unzip anywhere and double-click "program 启动.cmd" inside. **Do not double-click the exe directly**: without
 `DOTNET_ROOT` it looks for a system-wide .NET and fails with "You must install or update .NET".
 ## Deploying the classroom app
 

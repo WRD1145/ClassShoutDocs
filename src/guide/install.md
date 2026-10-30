@@ -64,8 +64,8 @@ Windows 的两个应用各有两个文件，选一个就行：
 
 | 文件 | 形态 | 适合 |
 |---|---|---|
-| `ClassShout.Classroom-win-x64.zip`<br>`ClassShout.Teacher-win-x64.zip` | **便携版（自包含 / 无依赖）** | 不想在系统里留东西、或者装在 U 盘/共享盘上带着走。解压即用，删目录即卸 |
-| `ClassShout.Classroom-win-x64-setup.exe`<br>`ClassShout.Teacher-win-x64-setup.exe` | **安装程序（同时是更新程序）** | 教室里那台电脑长期使用：装一次，之后双击快捷方式就开，不用记"要先双击启动脚本" |
+| `ClassShout.Classroom-win-x64.zip`<br/>`ClassShout.Teacher-win-x64.zip` | **便携版（自包含 / 无依赖）** | 不想在系统里留东西、或者装在 U 盘/共享盘上带着走。解压即用，删目录即卸 |
+| `ClassShout.Classroom-win-x64-setup.exe`<br/>`ClassShout.Teacher-win-x64-setup.exe` | **安装程序（同时是更新程序）** | 教室里那台电脑长期使用：装一次，之后双击快捷方式就开，不用记"要先双击启动脚本" |
 
 两者的内容完全一样（自包含，目标机都不用装 .NET），只是**摆放方式不同**：
 
@@ -74,7 +74,7 @@ Windows 的两个应用各有两个文件，选一个就行：
 
 ### 用安装程序（推荐给教室）
 
-双击 `setup.exe` → 它问装到哪（回车用默认的 `%LOCALAPPDATA%\ClassShout\<应用>`）→ 装完会问要不要现在启动。
+双击 `setup.exe` → 它问装到哪（回车用默认的 `%LOCALAPPDATA%\ClassShout\应用`）→ 装完会问要不要现在启动。
 **不需要管理员权限**：装在当前用户目录下，卸载也走「设置 → 应用 → 已安装的应用」里那一栏。
 
 - **更新**：拿新版的 `setup.exe`，运行时加 `/update`（或者直接双击 setup.exe 覆盖安装也一样）。
@@ -85,7 +85,7 @@ Windows 的两个应用各有两个文件，选一个就行：
 
 ### 用便携版
 
-解压到任意目录，双击里面的「<程序名> 启动.cmd」。**别直接双击 exe**：不设 `DOTNET_ROOT` 时
+解压到任意目录，双击里面的「程序名 启动.cmd」。**别直接双击 exe**：不设 `DOTNET_ROOT` 时
 它会去找系统里装的那份 .NET，找不到就报 "You must install or update .NET"。
 ## 部署教室端
 
