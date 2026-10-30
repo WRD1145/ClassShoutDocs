@@ -65,8 +65,8 @@
 
 | 端 | RID / 产物 | 说明 |
 |---|---|---|
-| 教室端 | `win-x64` → `ClassShout.Classroom-win-x64.zip`；`linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | 程序文件在根目录、私有运行时在 `runtime/`；机器上不用装 .NET 运行时 |
-| 教师端（桌面） | `win-x64` → `ClassShout.Teacher-win-x64.zip` | 同一个形状（根目录 + `runtime/`）；**没有 Linux 包** |
+| 教室端 | `win-x64` → `ClassShout.Classroom-win-x64.zip`（便携版）或 `ClassShout.Classroom-win-x64-setup.exe`（安装程序，兼更新）；`linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | 都是自包含，机器上不用装 .NET 运行时；两者只在运行时摆放上不同（`runtime/` 还是平铺），见[安装与部署](/guide/install.html)里「两种装法」 |
+| 教师端（桌面） | `win-x64` → `ClassShout.Teacher-win-x64.zip`（便携版）或 `ClassShout.Teacher-win-x64-setup.exe`（安装程序，兼更新） | 自包含；**没有 Linux 包** |
 | 教师端（手机） | `android-arm64` + `android-x64` → `classshout-teacher-<版本>-universal.apk` | **APK 是自包含的**：.NET 运行时与程序集都在包里，手机上不用再装别的东西 |
 | 中继服务器 | `win-x64` → zip；`linux-x64` → `ClassShout.RelayServer-linux-x64.tar.gz` | Linux 包解压后先 `chmod +x`，Windows 打的 tar 不保留可执行位 |
 

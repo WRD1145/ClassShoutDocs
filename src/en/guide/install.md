@@ -62,6 +62,36 @@ names" and generates `SHA256SUMS.txt`.
 but the target machine has to have the .NET 10 runtime installed first.
 See [Build and packaging](/en/dev/build.html) for the full set of options.
 
+## Two ways to install: portable or setup
+
+Each Windows app ships two files; pick one.
+
+| File | Form | Good for |
+|---|---|---|
+| `ClassShout.Classroom-win-x64.zip`<br>`ClassShout.Teacher-win-x64.zip` | **Portable (self-contained / no dependencies)** | Leaving nothing behind, or carrying it on a USB stick / network share. Unzip to use, delete the folder to remove |
+| `ClassShout.Classroom-win-x64-setup.exe`<br>`ClassShout.Teacher-win-x64-setup.exe` | **Installer (which is also the updater)** | The PC that lives in the classroom: install once, then a shortcut opens it — no "remember to double-click the launcher script" |
+
+The content is identical (self-contained; the target machine needs no .NET). What differs is **the layout**:
+
+- the portable build keeps the runtime under `runtime\`, so the launcher has to set `DOTNET_ROOT` first;
+- the installed build is **flat** (the runtime sits next to the main program), so a shortcut to the exe just works.
+
+### Using the installer (recommended for classrooms)
+
+Run `setup.exe` → it asks where to install (press Enter for `%LOCALAPPDATA%\ClassShout\<app>`) → offers to start it.
+**No administrator rights needed**: it installs under the current user, and uninstalling goes through
+Settings → Apps → Installed apps.
+
+- **Update**: take the newer `setup.exe` and pass `/update` (or simply run it again — overwriting works the same).
+  It closes the running instance, overwrites the program files and starts the new version. **Logs and settings are untouched**.
+- **Uninstall**: Settings → Apps → Installed apps, or the "卸载 …" entry in the Start menu. It removes the program and
+  shortcuts but **keeps settings** (those live in the per-user config directory; delete `%LOCALAPPDATA%\ClassShout` to wipe them).
+- There is no code-signing certificate, so the first run shows a SmartScreen warning: More info → Run anyway.
+
+### Using the portable build
+
+Unzip anywhere and double-click "<program> 启动.cmd" inside. **Do not double-click the exe directly**: without
+`DOTNET_ROOT` it looks for a system-wide .NET and fails with "You must install or update .NET".
 ## Deploying the classroom app
 
 1. Unzip `ClassShout.Classroom-win-x64.zip` into a fixed directory, for example `C:\ClassShout\`,

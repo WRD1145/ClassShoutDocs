@@ -68,8 +68,8 @@ machines".
 
 | Platform | RID / artifact | Notes |
 |---|---|---|
-| Classroom app | `win-x64` → `ClassShout.Classroom-win-x64.zip`; `linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | Program files at the root, the private runtime under `runtime/`; no .NET runtime has to be installed |
-| Teacher app (desktop) | `win-x64` → `ClassShout.Teacher-win-x64.zip` | The same shape (root + `runtime/`); **no Linux package** |
+| Classroom app | `win-x64` → `ClassShout.Classroom-win-x64.zip` (portable) or `ClassShout.Classroom-win-x64-setup.exe` (installer that also updates); `linux-x64` → `ClassShout.Classroom-linux-x64.tar.gz` | All self-contained, no .NET runtime to install; the two Windows files differ only in where the runtime sits (`runtime/` vs. flat), see "Two ways to install" in [install](/en/guide/install.html) |
+| Teacher app (desktop) | `win-x64` → `ClassShout.Teacher-win-x64.zip` (portable) or `ClassShout.Teacher-win-x64-setup.exe` (installer that also updates) | Self-contained; **no Linux package** |
 | Teacher app (phone) | `android-arm64` + `android-x64` → `classshout-teacher-<version>-universal.apk` | **The APK is self-contained**: the .NET runtime and the assemblies are inside the package, and nothing else has to be installed on the phone |
 | Relay server | `win-x64` → zip; `linux-x64` → `ClassShout.RelayServer-linux-x64.tar.gz` | After unpacking the Linux package, `chmod +x` first — a tar produced on Windows does not keep the executable bit |
 

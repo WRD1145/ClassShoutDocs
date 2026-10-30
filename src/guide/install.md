@@ -58,6 +58,35 @@ pwsh -File scripts/pack.ps1 -IncludeLinuxServer
 .NET 10 运行时。
 详细参数见 [构建与打包](/dev/build.html)。
 
+## 两种装法：便携版还是安装程序
+
+Windows 的两个应用各有两个文件，选一个就行：
+
+| 文件 | 形态 | 适合 |
+|---|---|---|
+| `ClassShout.Classroom-win-x64.zip`<br>`ClassShout.Teacher-win-x64.zip` | **便携版（自包含 / 无依赖）** | 不想在系统里留东西、或者装在 U 盘/共享盘上带着走。解压即用，删目录即卸 |
+| `ClassShout.Classroom-win-x64-setup.exe`<br>`ClassShout.Teacher-win-x64-setup.exe` | **安装程序（同时是更新程序）** | 教室里那台电脑长期使用：装一次，之后双击快捷方式就开，不用记"要先双击启动脚本" |
+
+两者的内容完全一样（自包含，目标机都不用装 .NET），只是**摆放方式不同**：
+
+- 便携版把运行时收在 `runtime\` 下，所以启动时必须由启动脚本先设 `DOTNET_ROOT`；
+- 安装版是**平铺**的（运行时就在主程序旁边），快捷方式直接指向主程序，双击就开。
+
+### 用安装程序（推荐给教室）
+
+双击 `setup.exe` → 它问装到哪（回车用默认的 `%LOCALAPPDATA%\ClassShout\<应用>`）→ 装完会问要不要现在启动。
+**不需要管理员权限**：装在当前用户目录下，卸载也走「设置 → 应用 → 已安装的应用」里那一栏。
+
+- **更新**：拿新版的 `setup.exe`，运行时加 `/update`（或者直接双击 setup.exe 覆盖安装也一样）。
+  它会自己关掉正在运行的实例、覆盖程序文件、再拉起新版本。**日志与设置都不会被动**。
+- **卸载**：「设置 → 应用 → 已安装的应用」里找到它，或者开始菜单里的「卸载 …」。
+  卸载只删程序与快捷方式，**不删设置**（设置在本机配置目录，想彻底清干净得手动删 `%LOCALAPPDATA%\ClassShout`）。
+- 没有代码签名证书，第一次运行会有 SmartScreen 提示：点「更多信息」→「仍要运行」。
+
+### 用便携版
+
+解压到任意目录，双击里面的「<程序名> 启动.cmd」。**别直接双击 exe**：不设 `DOTNET_ROOT` 时
+它会去找系统里装的那份 .NET，找不到就报 "You must install or update .NET"。
 ## 部署教室端
 
 1. 把 `ClassShout.Classroom-win-x64.zip` 解压到一个固定目录，例如 `C:\ClassShout\`，
