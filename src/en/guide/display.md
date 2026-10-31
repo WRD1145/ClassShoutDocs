@@ -25,6 +25,19 @@ when the sender did not specify one". The two sets of values mind their own busi
 
 That way, shouts sent from an older teacher app still show up sensibly instead of showing nothing at all.
 
+## A window-style shout brings the window back
+
+The "Window" option puts the text into the **main window's** big-caption area. But the classroom PC
+often has been closed to the tray (the × button) or minimised — in that case the shout *was* "displayed",
+nobody just could see it: the teacher app receives a success receipt while the classroom stays silent.
+That is worse than an outright failure, because it looks fine.
+
+So: **when a window-style shout arrives and the main window is hidden in the tray or minimised,
+the classroom app brings it back up by itself**, leaving one line in the log:
+"主窗口原本是关着的，已把它唤出来显示这条喊话".
+
+The "Pop-up" option is unaffected — it draws in its own always-on-top window, visible whether the main
+window is open or not.
 ## A few implementation trade-offs
 
 - **"Stays on screen" and "not specified" use different values** (0 and a negative number) to tell
