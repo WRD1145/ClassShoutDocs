@@ -51,3 +51,16 @@ the teacher shouts something new, the previous one stops.
 > The delivered payload carries a `kind` field (`text` / `voice` / `voiceTranscript` / `image`),
 > and the plugin uses it to decide what to put on the mask. Older plugin versions don't know
 > it and treat it as a text shout — which doesn't stop the shout from being received.
+
+## Sending after a class starts or ends
+
+Requires the ClassShout bridge plugin **1.1.0.0 or later**. ClassIsland loads the active profile for today. The classroom app reads its current timetable every five seconds and shares a summary through the relay with authorized teachers, without uploading the profile's attached settings.
+
+1. Sign in, bind the target classroom, and enter the message on the text page.
+2. Refresh the bound classroom's timetable in the ClassIsland scheduling card.
+3. Select a period, its start or end, and an offset of 0–180 minutes. Zero means send at that time.
+4. Submit the text and wait for confirmation that the classroom saved it locally. Listed tasks can also be cancelled with classroom confirmation.
+
+Tasks are stored in `classisland-schedules.json` on the classroom machine. Once saved, they execute locally even if the teacher exits or the relay disconnects. Every check uses **ClassIsland's latest active timetable**, so a timetable change updates the trigger time. An unavailable or stale timetable is never guessed. Tasks missed by more than three minutes are not replayed after recovery.
+
+This first version supports one-time text tasks for today, without cross-day repetition, images or recorded voice. ClassIsland, the bridge plugin and the classroom app must remain running on an awake machine. The five-second check interval can cause a few seconds of delay. Offline classrooms, old plugins, missing timetables, missing authorization and unconfirmed saves show explicit errors. If a submission outcome is unknown, refresh the task list before creating another copy.
