@@ -232,7 +232,7 @@ curl -s https://relay.example.com/api/health
 ```
 
 
-## Android 后台接收（开发中）
+## Android 后台接收
 
 连接并绑定教室时，Android 教师端会启动前台接收服务，常驻通知为「ClassShout 正在接收教室消息」，沿用教室回复通知渠道。服务托管原来的中继轮询，按 Home 或划掉最近任务中的页面不会另外开一份轮询，也不会主动停止接收。退出登录或主动解除绑定时停止服务。
 
