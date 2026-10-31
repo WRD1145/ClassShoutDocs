@@ -110,3 +110,10 @@ classroom.
 
 For what the tray, desktop notifications, playback and recording each need installed, see
 [the classroom app on Linux](/en/guide/linux.html).
+
+## Local bells (in development)
+
+The Bells card supports adding, editing, disabling, deleting and previewing schedules. Click Save bells after editing. Plans are stored in bells.json on the classroom machine and use a locally synthesized tone without a teacher or relay connection. Use HH:mm. Weekday bits from Monday to Sunday are 1, 2, 4, 8, 16, 32 and 64; add them to select days (31 for weekdays, 127 for every day).
+
+The machine must remain awake with the classroom app running. Missed schedules are not replayed after shutdown or sleep. Overlapping bells are skipped with a log entry while another bell plays. The start notification can be disabled and bell volume is independent. Save and playback failures are logged.
+
