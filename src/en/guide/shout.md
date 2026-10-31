@@ -59,3 +59,10 @@ When ClassIsland is also running in the classroom, a voice shout delivers two no
 "voice message" when the voice starts, and then, once the transcription comes back, another one
 carrying the recognized words. See
 [Integrating with ClassIsland](/en/guide/classisland.html) for details.
+
+## Delivery receipts (in development)
+
+The text page lists up to 100 deliveries from the current session; the voice page shows the latest one. Expand the status to view its timestamped timeline: sent, delivered to classroom, displayed, and read or played to completion. Delivery requires classroom confirmation; display is reported after a rendering pass. Each classroom has a separate delivery record.
+
+Connection failures, server rejection, muting, decoding and playback failures include a reason. If no execution result arrives within 45 seconds, the record reports that the classroom has not reported back. Receipts are not yet persisted across app restarts. Older classroom versions without execution receipts will time out.
+
