@@ -268,3 +268,9 @@ new version actually went live:
 curl -s https://relay.example.com/api/health
 # {"ok":true,"service":"ClassShout.RelayServer","version":"1.9.0",...}
 ```
+
+## Android background reception (in development)
+
+Binding a classroom starts a foreground receiver with the persistent text "ClassShout 正在接收教室消息", using the existing classroom replies notification channel. The service hosts the original relay poller. Pressing Home or dismissing the activity from recent tasks does not start a duplicate poller or stop reception. Logging out or explicitly unbinding stops the service.
+
+Allow notification permission. When Android recreates the receiver process, the service attempts to restore its saved session and cursor; expired server sessions require rebinding. Force-stop, shutdown, disconnection and manufacturer background restrictions can still interrupt reception. Server schedule outcomes also use this channel. Local schedules still require the application to be running.
