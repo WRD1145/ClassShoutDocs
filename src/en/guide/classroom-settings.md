@@ -150,3 +150,19 @@ The Bells card supports adding, editing, disabling, deleting and previewing sche
 
 The machine must remain awake with the classroom app running. Missed schedules are not replayed after shutdown or sleep. Overlapping bells are skipped with a log entry while another bell plays. The start notification can be disabled and bell volume is independent. Save and playback failures are logged.
 
+
+## Connection diagnostics
+
+Open “Connection diagnostics and configuration migration” in Settings to test the classroom listener, relay health endpoint, TTS and today's ClassIsland schedule. Each component has its own result and explanation. Relay health does not confirm account authorization or message delivery, and speakers still need a listening test. System speech checks engine availability; Edge checks the voice endpoint only. Third-party TTS synthesizes a short test sentence and validates the WAV without playback; service charges may apply.
+
+The sanitized report contains component results, fixed explanations, timings and a timestamp. It excludes addresses, accounts, credentials, response bodies and raw logs. Errors never include echoed server content. Health probes strictly validate HTTPS certificates regardless of the relaxed certificate option.
+
+## Configuration backup and migration
+
+Save your settings first, then export a configuration backup. Classroom backups contain bell rules and embedded audio, quick-reply components, and TTS engine, voices, volume, rate and fallback preferences. Backups contain your custom text and audio; store them appropriately.
+
+Login data, classroom identity, server settings, IPC tokens and executable plugin lists are excluded. Third-party TTS credentials and endpoint addresses are also excluded because addresses can contain credentials. Select a backup on the destination computer, review the overwrite preview and confirm import. **Restart the application before use.** Existing destination addresses, credentials and login data are preserved. On a new computer, enter the TTS endpoint and key again; missing system voices fall back to a local default. Import never enables plugins.
+
+Import replaces applicable settings rather than merging lists. Other-role sections are ignored. Files must use a supported format version and be at most 16 MiB; unknown fields and invalid components are rejected. Files are replaced atomically; a write failure restores earlier replaced files. If permissions prevent restoration, an explicit rollback failure is shown.
+
+If speech settings are PIN-protected, unlock them before importing. Protection is checked again at confirmation, even if the preview was already open. Connection diagnostics remain available.

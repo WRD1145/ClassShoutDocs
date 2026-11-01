@@ -78,3 +78,9 @@ The text page lists up to 100 deliveries from the current session; the voice pag
 
 Connection failures, server rejection, muting, decoding and playback failures include a reason. Delivery confirmation and display-only messages time out after 45 seconds. Speech and audio completion allow up to 10 minutes, so recording or queued speech is not mistaken for a short timeout. Non-interrupting speech is queued and completed against each original message ID. Receipts are not yet persisted across app restarts. Older classroom versions without execution receipts will time out.
 
+
+## Connection diagnostics and configuration migration
+
+The teacher Devices page provides one-click tests and sanitized report export for the classroom connection, relay health, TTS and ClassIsland, with the verification scope stated for each. Relay binding still requires delivery receipts to confirm classroom execution. The teacher never treats its own speech engine or ClassIsland instance as the classroom's. Diagnose and audition TTS on the classroom computer; after login and binding, the ClassIsland check reads the bound classroom's live schedule.
+
+Teacher backups migrate local favorite phrases. They exclude login tokens, bindings, server addresses, IPC credentials and plugin lists. Export bells, quick replies and TTS settings from the classroom instead. Import shows an overwrite preview, replaces applicable settings only after confirmation, and requires an application restart. Existing destination login data and credentials are preserved. See [classroom migration details](/en/guide/classroom-settings.html#configuration-backup-and-migration) for scope and limits.
