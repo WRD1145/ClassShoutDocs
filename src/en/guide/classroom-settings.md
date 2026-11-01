@@ -136,6 +136,8 @@ The repository includes a PowerShell 7 client: `pwsh -File scripts/classshout-ip
 
 ## Process plugins
 
+For implementation details, read [Plugin development](/en/dev/plugins.html): registration, runnable examples, protocol and receipts, and teacher-host differences.
+
 The first version supports **trusted local classroom extensions**, without a marketplace, DLL loading or UI extensions. Plugins can submit local text/speech and query their own receipts. They receive no IPC or relay token and cannot issue the global stop command. Separate processes isolate crashes; they are **not an operating-system security sandbox** and run with the current user's permissions.
 
 Edit the `Plugins` array in `extensions.json`, preserving `Token` and `IpcEnabled`. Each entry has `Id`, an absolute `Executable` path, string-array `Arguments`, and explicit `Enabled: true`. Identifiers accept ASCII letters, digits, dots, hyphens and underscores. At most 16 entries are read. Save/apply in settings to reload. Set enabled to false and apply to disable; exited plugins are not automatically restarted.

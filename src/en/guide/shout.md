@@ -62,6 +62,8 @@ carrying the recognized words. See
 
 ## Teacher-side local IPC and plugins
 
+See [Plugin development](/en/dev/plugins.html) for runnable examples, host differences, lifecycle, receipt retention and debugging.
+
 The desktop teacher app provides an extension card on the Devices page. Enable IPC and save/apply. It uses a separate `teacher-extensions.json` and `127.0.0.1:45904`, with a token independent from the classroom app. Android does not support this version of desktop process plugins or IPC.
 
 Connect the teacher app to the target classroom normally. `POST /v1/shouts` sends only to the **currently connected classroom**, using the existing LAN or relay transport, message list and real execution receipts. Disconnected submissions return 409. With `speak: true`, the classroom uses its own speech configuration, including third-party TTS; the teacher app does not store another set of remote speech credentials.
