@@ -111,6 +111,39 @@ classroom.
 For what the tray, desktop notifications, playback and recording each need installed, see
 [the classroom app on Linux](/en/guide/linux.html).
 
+## Third-party HTTP speech
+
+Select the third-party HTTP engine, enter a complete endpoint, optional voice and Bearer key, choose system-voice fallback, save, then preview. Keys are stored locally in `classroom-speech.json`; do not share this file or its configuration directory.
+
+This is a generic ClassShout adapter protocol, not automatic compatibility with every vendor. The service accepts POST JSON containing `text`, `voice`, `rate` (-10 to 10) and `format: "wav"`, and returns raw **16-bit PCM WAV**. Other vendor formats need a conversion service. Local offline synthesis servers are supported. Sending a key over HTTP requires explicit opt-in; HTTPS validates certificates and redirects are disabled.
+
+Each request allows 30 seconds, 10000 text characters and an 8 MiB response. Existing queues and per-message receipts remain in use. Completion is reported after playback; cancellation, timeout or decoding failures cancel or fail the operation, with system speech used when fallback is enabled.
+
+## Local IPC
+
+The first version exposes local execution in the **classroom app**. Enable local HTTP IPC in settings and save/apply. It is disabled by default and listens only on `127.0.0.1:45903`. Every request requires `Authorization: Bearer <Token>` using the token in local `extensions.json`. Do not expose this token to web pages or other users.
+
+| Method and path | Purpose |
+|---|---|
+| `GET /v1/status` | Classroom name, mute state and volume |
+| `POST /v1/shouts` | Submit `{ "id": "unique-id", "text": "message", "speak": false }` |
+| `GET /v1/receipts/message-id` | Delivery, display, speech completion or failure timeline |
+| `POST /v1/stop` | Stop the current shout |
+
+HTTP 202 confirms acceptance, not execution. Query receipts to confirm the outcome. Retrying the same identifier and content does not replay it; changed content under the same identifier returns 409. Receipts and deduplication are session-only, limited to 1000 messages, after which submissions return 429. Never expose the endpoint publicly. After a timeout, query the original identifier before retrying.
+
+The repository includes a PowerShell 7 client: `pwsh -File scripts/classshout-ipc.ps1 -Text "Get ready for class" -Id demo-1`, then `pwsh -File scripts/classshout-ipc.ps1 -Receipt demo-1`. Use `-DataDirectory` for custom storage. Cross-site Origin, non-loopback Host and chunked requests are rejected. Limits are 32 KiB per body, 16 connections and five seconds per request; malformed requests may be disconnected.
+
+## Process plugins
+
+The first version supports **trusted local classroom extensions**, without a marketplace, DLL loading or UI extensions. Plugins can submit local text/speech and query their own receipts. They receive no IPC or relay token and cannot issue the global stop command. Separate processes isolate crashes; they are **not an operating-system security sandbox** and run with the current user's permissions.
+
+Edit the `Plugins` array in `extensions.json`, preserving `Token` and `IpcEnabled`. Each entry has `Id`, an absolute `Executable` path, string-array `Arguments`, and explicit `Enabled: true`. Identifiers accept ASCII letters, digits, dots, hyphens and underscores. At most 16 entries are read. Save/apply in settings to reload. Set enabled to false and apply to disable; exited plugins are not automatically restarted.
+
+`examples/plugins/hello.ps1` is a runnable example. On Windows, set `Executable` to the installed `pwsh.exe`; arguments are `-NoProfile`, `-File`, and the script's absolute path. It submits one text message, polls its display receipt, then exits.
+
+The protocol is UTF-8 JSON lines over standard streams. Each stdout line is a command such as `{ "method": "POST", "path": "/v1/shouts", "body": { "id": "demo", "text": "Hello", "speak": false } }`; stdin returns `{ "status": 202, "body": ... }`. GET commands also require `body: {}`. Each plugin has a separate message namespace. Lines are limited to 8192 characters and commands to five seconds. Keep ordinary logs off stdout. Stderr is drained but not automatically logged to avoid exposing sensitive data.
+
 ## Local bells
 
 The Bells card supports adding, editing, disabling, deleting and previewing schedules. Click Save bells after editing. Plans are stored in bells.json on the classroom machine and use a locally synthesized tone without a teacher or relay connection. Use HH:mm. Weekday bits from Monday to Sunday are 1, 2, 4, 8, 16, 32 and 64; add them to select days (31 for weekdays, 127 for every day).
