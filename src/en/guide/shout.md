@@ -60,6 +60,18 @@ When ClassIsland is also running in the classroom, a voice shout delivers two no
 carrying the recognized words. See
 [Integrating with ClassIsland](/en/guide/classisland.html) for details.
 
+## Teacher-side local IPC and plugins
+
+The desktop teacher app provides an extension card on the Devices page. Enable IPC and save/apply. It uses a separate `teacher-extensions.json` and `127.0.0.1:45904`, with a token independent from the classroom app. Android does not support this version of desktop process plugins or IPC.
+
+Connect the teacher app to the target classroom normally. `POST /v1/shouts` sends only to the **currently connected classroom**, using the existing LAN or relay transport, message list and real execution receipts. Disconnected submissions return 409. With `speak: true`, the classroom uses its own speech configuration, including third-party TTS; the teacher app does not store another set of remote speech credentials.
+
+Endpoints match the classroom API: `GET /v1/status`, `POST /v1/shouts`, `GET /v1/receipts/message-id`, and `POST /v1/stop`. Stop confirms that a request was sent. Receipts follow the latest-100-message limit and return 410 after removal. Identifiers are deduplicated during the teacher session, with a 1000-message limit. Query the original receipt after a disconnect instead of retrying under a new identifier.
+
+Add `-Role Teacher` to the client: `pwsh -File scripts/classshout-ipc.ps1 -Role Teacher -Text "Get ready for class" -Id teacher-demo`, then query with `-Role Teacher -Receipt teacher-demo`. Use `-DataDirectory` for custom storage.
+
+Plugins use the same `Plugins` array, absolute executable paths, structured arguments and explicit `Enabled: true`. Save once to create the configuration file; edit and apply again. The runnable `examples/plugins/hello.ps1` can be reused. Plugins may submit, query status and read their own receipts, but cannot issue global stop or obtain account/relay tokens. Separate processes are not a security sandbox; enable trusted programs only. See the [classroom extension guide](/en/guide/classroom-settings.html) for the protocol and resource limits.
+
 ## Delivery receipts
 
 The text page lists up to 100 deliveries from the current session; the voice page shows the latest one. Expand the status to view its timestamped timeline: sent, delivered to classroom, displayed, and read or played to completion. Delivery requires classroom confirmation; display is reported after a rendering pass. Each classroom has a separate delivery record.
