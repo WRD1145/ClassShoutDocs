@@ -5,7 +5,7 @@
 | [项目结构](/dev/structure.html) | 各个项目负责什么、分层原则、状态文件放哪 |
 | [构建与打包](/dev/build.html) | 依赖、构建命令、打包脚本、发布脚本 |
 | [验证](/dev/verify.html) | 回归五阶段、端到端工具、渲染校验 |
-| [插件开发](/dev/plugins.html) | 两端进程插件、JSONL 协议、HTTP IPC、回执与调试 |
+| [插件开发](/dev/plugins.html) | 两端托管插件、依赖注入、程序集隔离、插件包与管理 |
 
 ## 想快速上手
 

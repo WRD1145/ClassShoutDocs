@@ -13,7 +13,9 @@
 |---|---|---|
 | `classroom.json` | 教室名、UUID、口令、服务器地址、「启动时自动连接」，以及「允许不信任的 TLS 连接」 | **是**（口令） |
 | `classroom-notification.json` | 弹窗设置与喊话默认展示参数 | 否 |
-| `classroom-speech.json` | 朗读设置（引擎、音色、音量、语速） | 否 |
+| `classroom-speech.json` | 朗读设置（引擎、音色、音量、语速、第三方服务地址与密钥） | **是**（第三方密钥） |
+| `classroom-ipc.json` | 开发版独立 IPC 开关与 Token，旧 extensions.json 保留备查 | **是** |
+| `classroom-plugins.json` | 开发版插件注册、元数据及启用状态，不含 IPC 令牌 | 否 |
 | `classroom-stt.json` | 语音转文字的接口地址与**密钥** | **是**（密钥） |
 | `classroom-reply.json` | 回复设置（快捷回复、知道了、文字/语音开关、语音时长上限） | 否 |
 | `settings-lock.json` | PIN 的派生值与盐、哪几项受保护 | **是**（派生值，不含明文） |
@@ -56,6 +58,8 @@
 | 文件 | 内容 | 含凭据 |
 |---|---|---|
 | `teacher.json` | 服务器地址、登录令牌、已保存的教室（**含口令**）、任教科目（默认 + 按班级），以及「允许不信任的 TLS 连接」 | **是** |
+| `teacher-ipc.json` | 开发版教师 IPC 开关与独立 Token，旧 teacher-extensions.json 保留备查 | **是** |
+| `teacher-plugins.json` | 开发版教师插件注册与启用状态 | 否 |
 | `teacher-display.json` | 上次用的展示参数 | 否 |
 | `teacher-schedule.json` | 本机定时喊话（待发 + 最近处理完的） | 否 |
 | `schedule-audio/` | 本机定时语音的 WAV（发出去或取消之后就删掉） | 否 |

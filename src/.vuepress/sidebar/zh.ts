@@ -46,7 +46,7 @@ export const zhSidebar = sidebar({
       text: "参考",
       icon: "fa-solid fa-list",
       collapsible: false,
-      children: ["README.md", "protocol.md", "config-files.md", "platforms.md", "troubleshooting.md"],
+      children: ["README.md", "protocol.md", "ipc.md", "config-files.md", "platforms.md", "troubleshooting.md"],
     },
   ],
 

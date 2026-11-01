@@ -1,0 +1,658 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ClassShout 本机 HTTP IPC",
+    "version": "1.0.0",
+    "description": "独立于托管插件 SDK；仅限可信本机应用。回环监听、Bearer 令牌、32 KiB 正文、5 秒连接、4 并发。配置分离适用于开发版，路由兼容 1.21.0。"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:45903",
+      "description": "教室端"
+    },
+    {
+      "url": "http://127.0.0.1:45904",
+      "description": "桌面教师端"
+    }
+  ],
+  "security": [
+    {
+      "localToken": []
+    }
+  ],
+  "paths": {
+    "/v1/status": {
+      "get": {
+        "operationId": "getStatus",
+        "summary": "读取当前端状态",
+        "responses": {
+          "200": {
+            "description": "对应端状态，不代表消息执行。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ClassroomStatus"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TeacherStatus"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/shouts": {
+      "post": {
+        "operationId": "sendText",
+        "summary": "提交不打断的文字喊话",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextShout"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "相同内容的幂等重试。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accepted"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "已接收，需查询执行回执。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/receipts/{id}": {
+      "get": {
+        "operationId": "getReceipt",
+        "summary": "查询当前 IPC 来源的执行回执",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "执行时间线。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stop": {
+      "post": {
+        "operationId": "stopCurrent",
+        "summary": "停止本机或请求当前教室停止",
+        "responses": {
+          "200": {
+            "description": "本机停止或远端请求已提交。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "stopped"
+                      ],
+                      "properties": {
+                        "stopped": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "requested"
+                      ],
+                      "properties": {
+                        "requested": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "请求或执行失败，参见 error。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "localToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "对应端 IPC 配置的 Token；不是登录令牌。"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "TextShout": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "\\S"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "speak": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "Accepted": {
+        "type": "object",
+        "required": [
+          "id",
+          "accepted",
+          "duplicate"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accepted": {
+            "type": "boolean"
+          },
+          "duplicate": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ClassroomStatus": {
+        "type": "object",
+        "required": [
+          "classroom",
+          "muted",
+          "volume",
+          "apiVersion"
+        ],
+        "properties": {
+          "classroom": {
+            "type": "string"
+          },
+          "muted": {
+            "type": "boolean"
+          },
+          "volume": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "apiVersion": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          }
+        }
+      },
+      "TeacherStatus": {
+        "type": "object",
+        "required": [
+          "connected",
+          "classroom",
+          "apiVersion",
+          "role"
+        ],
+        "properties": {
+          "connected": {
+            "type": "boolean"
+          },
+          "classroom": {
+            "type": "string"
+          },
+          "apiVersion": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "teacher"
+            ]
+          }
+        }
+      },
+      "Stage": {
+        "type": "string",
+        "enum": [
+          "sent",
+          "delivered",
+          "displayed",
+          "completed",
+          "failed"
+        ]
+      },
+      "DeliveryEvent": {
+        "type": "object",
+        "required": [
+          "stage",
+          "at"
+        ],
+        "properties": {
+          "stage": {
+            "$ref": "#/components/schemas/Stage"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Receipt": {
+        "type": "object",
+        "required": [
+          "id",
+          "stage",
+          "timeline"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/Stage"
+          },
+          "failure": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryEvent"
+            }
+          }
+        }
+      }
+    }
+  }
+}

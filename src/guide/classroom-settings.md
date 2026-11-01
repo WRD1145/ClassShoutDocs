@@ -101,30 +101,11 @@
 
 ## 本机 IPC
 
-第一版开放 **教室端** 本地执行接口。在设置中勾选「启用本机 HTTP IPC」，点「保存并应用扩展设置」。默认关闭，仅监听 `127.0.0.1:45903`；每个请求都需要 `Authorization: Bearer <Token>`，令牌见本机配置目录下 `extensions.json`，不要放进网页或分享出去。
+开发版提供独立「本机 IPC」卡片，配置位于 classroom-ipc.json，监听 127.0.0.1:45903，默认关闭并要求令牌。外部应用的路由、鉴权和 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。旧版 extensions.json 会保留并自动迁移，已有令牌不变。
 
-| 方法与路径 | 作用 |
-|---|---|
-| `GET /v1/status` | 查询教室名、静音和音量 |
-| `POST /v1/shouts` | 提交 `{ "id": "唯一标识", "text": "内容", "speak": false }` |
-| `GET /v1/receipts/消息标识` | 查询送达、上屏、朗读完或失败时间线 |
-| `POST /v1/stop` | 停止当前喊话 |
+## 插件管理
 
-首次提交返回 202，仅代表已接收；需要查询回执确认执行。相同标识和内容的重试不再播放，相同标识但不同内容返回 409。去重和回执仅保留本次运行，最多 1000 条，达到上限返回 429。不要将本地接口开放到公网，也不要把请求超时当作未执行，应先查询同一标识的回执。
-
-仓库提供 PowerShell 7 客户端：`pwsh -File scripts/classshout-ipc.ps1 -Text "请准备上课" -Id demo-1`；再运行 `pwsh -File scripts/classshout-ipc.ps1 -Receipt demo-1`。自定义配置目录时加 `-DataDirectory`。拒绝跨站 Origin、非回环 Host 和 chunked 请求；正文最多 32 KiB、16 个连接、5 秒请求期限，异常请求可能直接断开。
-
-## 独立进程插件
-
-编写插件请阅读[插件开发](/dev/plugins.html)，包含完整配置、可运行示例、协议与回执约定，以及教师端差异。
-
-第一版为教室端的 **可信本机扩展**，没有插件市场、DLL 加载或 UI 扩展。插件可提交本地文字/朗读并查询自己的回执，不会获得 IPC 或中继令牌，也不提供停止所有消息的插件命令。独立进程用于隔离崩溃，**不是操作系统安全沙箱**，程序仍具有当前用户权限。
-
-编辑 `extensions.json` 的 `Plugins` 数组，保留原有 `Token` 和 `IpcEnabled`，添加 `Id`、绝对路径 `Executable`、字符串数组 `Arguments` 和 `Enabled: true`。标识只能使用英文字母、数字、点、横线和下划线；最多读取 16 条配置。回到设置点「保存并应用扩展设置」重新加载。禁用则设为 false，再应用；不自动重启退出的插件。
-
-仓库的 `examples/plugins/hello.ps1` 是可运行示例。Windows 可将 `Executable` 指向已安装的 `pwsh.exe`，参数依次为 `-NoProfile`、`-File`、该脚本的绝对路径。它启动后提交一次文字并查询上屏结果后退出。
-
-协议为标准输入输出上的 UTF-8 JSON 行。插件 stdout 每行发送 `{ "method": "POST", "path": "/v1/shouts", "body": { "id": "demo", "text": "你好", "speak": false } }`，从 stdin 读取一行 `{ "status": 202, "body": ... }`。GET 命令也要包含空的 `body: {}`。每个插件使用独立消息命名空间；行上限为 8192 字符，每次命令限时 5 秒。stdout 不得写普通日志；stderr 会排空但不会自动记录，避免泄漏敏感数据。
+开发版将插件独立管理，支持本地包安装、搜索、详情、启停、重启与卸载。新插件使用 DI 和独立程序集加载上下文，不需要开启 IPC；安装后默认禁用。配置位于 classroom-plugins.json。SDK、清单和示例见[插件开发](/dev/plugins.html)。仅启用可信代码；程序集隔离不是安全沙箱。
 
 ## 本地铃声
 

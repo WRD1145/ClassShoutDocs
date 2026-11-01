@@ -5,7 +5,7 @@
 | [Project structure](/en/dev/structure.html) | What each project is responsible for, the layering principles, and where state files live |
 | [Build and packaging](/en/dev/build.html) | Dependencies, build commands, packaging scripts, release scripts |
 | [Verification](/en/dev/verify.html) | The five regression stages, end-to-end tooling, render validation |
-| [Plugin development](/en/dev/plugins.html) | Both process-plugin hosts, JSONL, HTTP IPC, receipts and debugging |
+| [Plugin development](/en/dev/plugins.html) | Managed plugins, dependency injection, assembly isolation, packaging and management |
 
 ## Want to get started quickly
 

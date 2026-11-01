@@ -115,7 +115,31 @@ looks the way it does today:
 
 ## What has to be configured
 
-Only the built-in `GITHUB_TOKEN`, with `contents: write` (creating tags, creating the release and
-uploading assets all need it). No other secret is configured.
-So changing CI behaviour means editing the workflow file, not a pile of secrets in the repository
-settings.
+The following signing flow belongs to this development version and was not used for the 1.21.0 release. Official publishing still needs GITHUB_TOKEN with contents: write, plus these repository Actions Secrets:
+
+| Secret | Value |
+|---|---|
+| WINDOWS_SIGNING_PFX_BASE64 | Base64 Windows code-signing PFX including private key and chain |
+| WINDOWS_SIGNING_PASSWORD | PFX password |
+| ANDROID_SIGNING_KEYSTORE_BASE64 | Base64 persistent Android keystore |
+| ANDROID_SIGNING_KEY_ALIAS | Signing key alias |
+| ANDROID_SIGNING_STORE_PASSWORD | Keystore password |
+| ANDROID_SIGNING_KEY_PASSWORD | Alias private-key password |
+
+Real signing material is not configured yet, so the successful official-signing path remains unverified. Never commit private keys or passwords to source, notes or logs. This PFX integration requires an exportable private key; hardware/cloud certificates need their signing provider integrated separately.
+
+## Unified signing order
+
+Windows portable files, installer payloads and installers use the same code-signing certificate. Owned ClassShout exe/dll files are signed before archiving and verified for identity, trust and SHA-256 timestamps; third-party runtimes are not re-signed. Every Android ABI uses the same persistent keystore; apksigner checks its certificate digest against that keystore and rejects Android Debug certificates. Platforms use their appropriate signature formats rather than pretending one temporary certificate is a cross-platform release identity.
+
+ZIPs/installers and SHA256SUMS are finalized after signing. Linux archives retain checksum verification; SHA-256 checksums are not publisher digital signatures. Experimental macOS artifacts remain unsigned and outside the official release assets.
+
+Keys are decoded only into a restricted Runner temporary directory. Passwords use environment variables and Android env: password sources instead of command arguments. Temporary Windows certificate imports are cleaned after packing; an always step removes private-key files.
+
+## Missing material and validation
+
+Official packing uses scripts/pack.ps1 -RequireSigning. Any missing signing item fails before packaging; temporary/debug identities are never automatically substituted. An entirely unconfigured manual run may produce unsigned development assets only when both dry_run and allow_unsigned_dry_run are selected; it never creates a release. Partially configured material still fails to prevent mixed identities.
+
+Moving from previous temporary Android signing to a fixed key generally prevents in-place installation. Incrementing versionCode cannot resolve certificate mismatch. If the old private key cannot be recovered, retain migratable settings, uninstall/reinstall and sign in again; a new keystore cannot restore the old identity. Back up and reuse the same keystore thereafter.
+
+Syntax, YAML, missing-material rejection, explicit unsigned dry-runs and cleanup path boundaries can be checked locally. A trusted Windows signature and persistent-keystore release must be validated after Secrets are configured.

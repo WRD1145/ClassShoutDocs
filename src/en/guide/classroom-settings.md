@@ -121,30 +121,11 @@ Each request allows 30 seconds, 10000 text characters and an 8 MiB response. Exi
 
 ## Local IPC
 
-The first version exposes local execution in the **classroom app**. Enable local HTTP IPC in settings and save/apply. It is disabled by default and listens only on `127.0.0.1:45903`. Every request requires `Authorization: Bearer <Token>` using the token in local `extensions.json`. Do not expose this token to web pages or other users.
+The development version has a separate local IPC card and classroom-ipc.json. It listens on 127.0.0.1:45903, defaults to disabled and requires a token. See the standalone [IPC API documentation](/en/reference/ipc.html) for authentication, routes and OpenAPI. Legacy extensions.json is retained and migrated without changing credentials.
 
-| Method and path | Purpose |
-|---|---|
-| `GET /v1/status` | Classroom name, mute state and volume |
-| `POST /v1/shouts` | Submit `{ "id": "unique-id", "text": "message", "speak": false }` |
-| `GET /v1/receipts/message-id` | Delivery, display, speech completion or failure timeline |
-| `POST /v1/stop` | Stop the current shout |
+## Plugin management
 
-HTTP 202 confirms acceptance, not execution. Query receipts to confirm the outcome. Retrying the same identifier and content does not replay it; changed content under the same identifier returns 409. Receipts and deduplication are session-only, limited to 1000 messages, after which submissions return 429. Never expose the endpoint publicly. After a timeout, query the original identifier before retrying.
-
-The repository includes a PowerShell 7 client: `pwsh -File scripts/classshout-ipc.ps1 -Text "Get ready for class" -Id demo-1`, then `pwsh -File scripts/classshout-ipc.ps1 -Receipt demo-1`. Use `-DataDirectory` for custom storage. Cross-site Origin, non-loopback Host and chunked requests are rejected. Limits are 32 KiB per body, 16 connections and five seconds per request; malformed requests may be disconnected.
-
-## Process plugins
-
-For implementation details, read [Plugin development](/en/dev/plugins.html): registration, runnable examples, protocol and receipts, and teacher-host differences.
-
-The first version supports **trusted local classroom extensions**, without a marketplace, DLL loading or UI extensions. Plugins can submit local text/speech and query their own receipts. They receive no IPC or relay token and cannot issue the global stop command. Separate processes isolate crashes; they are **not an operating-system security sandbox** and run with the current user's permissions.
-
-Edit the `Plugins` array in `extensions.json`, preserving `Token` and `IpcEnabled`. Each entry has `Id`, an absolute `Executable` path, string-array `Arguments`, and explicit `Enabled: true`. Identifiers accept ASCII letters, digits, dots, hyphens and underscores. At most 16 entries are read. Save/apply in settings to reload. Set enabled to false and apply to disable; exited plugins are not automatically restarted.
-
-`examples/plugins/hello.ps1` is a runnable example. On Windows, set `Executable` to the installed `pwsh.exe`; arguments are `-NoProfile`, `-File`, and the script's absolute path. It submits one text message, polls its display receipt, then exits.
-
-The protocol is UTF-8 JSON lines over standard streams. Each stdout line is a command such as `{ "method": "POST", "path": "/v1/shouts", "body": { "id": "demo", "text": "Hello", "speak": false } }`; stdin returns `{ "status": 202, "body": ... }`. GET commands also require `body: {}`. Each plugin has a separate message namespace. Lines are limited to 8192 characters and commands to five seconds. Keep ordinary logs off stdout. Stderr is drained but not automatically logged to avoid exposing sensitive data.
+The development version separately manages local packages, search, details, enable/disable, restart and uninstall. New plugins use DI and independent assembly load contexts without enabling IPC; installation defaults to disabled. Registration uses classroom-plugins.json. See [Plugin development](/en/dev/plugins.html) for the SDK, manifest and example. Enable trusted code only; assembly isolation is not a security sandbox.
 
 ## Local bells
 

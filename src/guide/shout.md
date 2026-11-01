@@ -48,19 +48,13 @@
 语音开始时一条「语音消息」，识别结果出来后再一条带上识别出的字。
 详见 [与 ClassIsland 联动](/guide/classisland.html)。
 
-## 教师端本机 IPC 与插件
+## 教师端本机 IPC
 
-开发接口与可运行示例见[插件开发](/dev/plugins.html)，涵盖两端差异、生命周期、回执保留和调试方法。
+开发版桌面教师端的「设备」页提供独立 IPC 卡片，使用 teacher-ipc.json 和 127.0.0.1:45904。接口向当前连接教室发送，未连接明确拒绝。令牌与教室端独立；旧 teacher-extensions.json 自动迁移。完整路由与 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。
 
-桌面教师端在「设备」页提供扩展卡片。勾选启用 IPC 后点「保存并应用教师端扩展」，使用独立的 `teacher-extensions.json` 和端口 `127.0.0.1:45904`，令牌与教室端互不相通。Android 不支持这一版桌面进程插件与 IPC。
+## 教师端插件管理
 
-先在教师端正常连接目标教室。扩展的 `POST /v1/shouts` 只发送到**当前连接的教室**，经过原有局域网或中继通道，保留消息列表与真实教室执行回执；没有连接时返回 409，不假装发送成功。`speak: true` 由教室端按其朗读配置执行，包括教室已配置的第三方 TTS，教师端不另设一套远程语音密钥。
-
-接口与教室端相同：`GET /v1/status`、`POST /v1/shouts`、`GET /v1/receipts/消息标识`、`POST /v1/stop`。停止返回的是请求已发出；回执只保留最近 100 条，移除后查询返回 410。消息标识在本次教师端运行中去重，上限 1000；断线重试先查回执，不要换新标识重复发送。
-
-命令行添加 `-Role Teacher`：`pwsh -File scripts/classshout-ipc.ps1 -Role Teacher -Text "请准备上课" -Id teacher-demo`，然后用 `-Role Teacher -Receipt teacher-demo` 查询。自定义配置目录时添加 `-DataDirectory`。
-
-插件同样配置 `Plugins` 数组，使用绝对可执行路径、结构化参数和明确的 `Enabled: true`；先保存一次扩展设置生成文件，编辑后再次应用。可直接复用 `examples/plugins/hello.ps1`。插件只发送、查状态和自己的回执，不能停止其他老师的消息，不会拿到登录或中继令牌。独立进程并非安全沙箱，仅启用可信程序。协议、连接和大小限制见[教室端扩展说明](/guide/classroom-settings.html)。
+开发版的插件卡片提供已安装列表、搜索、详情、本地包安装、启停、重启和卸载，配置为 teacher-plugins.json。新 DLL 插件通过 DI 获取类型化宿主服务，每个插件拥有独立加载上下文及服务作用域。它不依赖 IPC 开关；Android 暂不加载桌面插件。开发示例和管理规则见[插件开发](/dev/plugins.html)。
 
 ## 送达回执
 

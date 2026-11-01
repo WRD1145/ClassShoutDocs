@@ -108,5 +108,31 @@ runner 上没有 keystore，所以打出来的 APK 用的是 .NET Android 的 **
 
 ## 需要配什么
 
-只有一个内置的 `GITHUB_TOKEN`，权限给到 `contents: write`（建标签、建发行版、传附件都要它）。
-没有另外配任何 secret。所以想改 CI 的行为，改的是工作流文件本身，不是仓库设置里的一串密钥。
+以下为本次开发版的新签名流程，1.21.0 发布时尚未采用。正式发行仍使用 GITHUB_TOKEN 的 contents: write 权限，同时需要在仓库 Actions Secrets 中配置：
+
+| Secret | 内容 |
+|---|---|
+| WINDOWS_SIGNING_PFX_BASE64 | 含私钥及证书链的 Windows 代码签名 PFX，以 Base64 保存 |
+| WINDOWS_SIGNING_PASSWORD | PFX 密码 |
+| ANDROID_SIGNING_KEYSTORE_BASE64 | 持久 Android keystore 的 Base64 |
+| ANDROID_SIGNING_KEY_ALIAS | 签名 key alias |
+| ANDROID_SIGNING_STORE_PASSWORD | keystore 密码 |
+| ANDROID_SIGNING_KEY_PASSWORD | alias 私钥密码 |
+
+当前尚未配置真实签名材料，因此正式签名的正向流水线还不能验收。请勿把私钥或密码提交进仓库、发布说明或日志。PFX 方案要求可导出的私钥；硬件或云签名证书需另接相应签名提供程序。
+
+## 统一签名顺序
+
+Windows 便携目录、安装程序内部文件和安装程序本身统一用同一代码签名证书签名；自有 ClassShout exe / dll 在压缩前签名并校验身份、证书信任和 SHA-256 时间戳，不重新签名第三方运行时。Android 所有 ABI 包使用同一个固定 keystore，并通过 apksigner 验证证书指纹与 keystore 一致，拒绝 Android Debug 证书。两平台使用各自适用的签名格式，不把一个临时证书当成跨平台正式身份。
+
+签名完成后才生成 ZIP / 安装程序和 SHA256SUMS。Linux 包仍使用附件校验清单；SHA-256 校验不是发布者数字签名。macOS 试验产物仍未签名，不进入正式发行附件。
+
+工作流只在 Runner 临时目录解码私钥，限制目录权限；密码通过环境变量及 Android 的 env: 密码来源传递，不进入命令行。Windows 临时导入证书在打包结束时清理，私钥临时文件由 always 步骤清理。
+
+## 缺失材料与验收
+
+正式打包使用 scripts/pack.ps1 -RequireSigning。缺少任一签名项会在开始打包前失败，不自动生成或退回临时 / 调试身份。只有手动运行同时选择 dry_run 与 allow_unsigned_dry_run，且完全未配置材料时，才允许未签名的开发验收包；它不会创建发行版。配置了一部分材料仍会失败，避免混签。
+
+从前面的临时 Android 签名切换至固定签名时，已有 APK 通常不能直接覆盖安装，versionCode 递增也不能消除签名不一致。若旧私钥无法恢复，需保留可迁移配置、卸载重装并重新登录；不要误以为新 keystore 能恢复旧身份。此后应长期备份和复用同一 keystore。
+
+脚本语法、YAML、缺失材料拒绝、显式未签名 dry-run 与清理路径边界可在本地验证；受信任 Windows 签名和持久 keystore 的真实发行验收必须待配置 Secrets 后完成。

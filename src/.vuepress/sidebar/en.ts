@@ -40,7 +40,7 @@ export const enSidebar = sidebar({
       text: "Reference",
       icon: "fa-solid fa-list",
       collapsible: false,
-      children: ["README.md", "protocol.md", "config-files.md", "platforms.md", "troubleshooting.md"],
+      children: ["README.md", "protocol.md", "ipc.md", "config-files.md", "platforms.md", "troubleshooting.md"],
     },
   ],
 

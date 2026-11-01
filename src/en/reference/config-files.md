@@ -15,7 +15,9 @@ machine should have their own separate identities.
 |---|---|---|
 | `classroom.json` | Classroom name, UUID, password, server address, the "connect on startup" switch, and the "accept untrusted TLS connections" switch | **Yes** (password) |
 | `classroom-notification.json` | Pop-up settings and the default display parameters for shouts | No |
-| `classroom-speech.json` | Speech settings (engine, voice, volume, rate) | No |
+| `classroom-speech.json` | Speech settings, including third-party endpoint and key | **Yes** (third-party key) |
+| `classroom-ipc.json` | Development IPC switch and token; legacy extensions.json is retained | **Yes** |
+| `classroom-plugins.json` | Development plugin metadata and enabled state, without IPC credentials | No |
 | `classroom-stt.json` | The transcription endpoint address and **key** | **Yes** (key) |
 | `classroom-reply.json` | Reply settings (quick replies, "got it", the text/voice switches, the voice time limit) | No |
 | `settings-lock.json` | The PIN's derived value and salt, and which items are protected | **Yes** (derived value, no plaintext) |
@@ -60,6 +62,8 @@ the same values as the placeholders. A `{...}` that is not recognised is left as
 | File | Contents | Holds credentials |
 |---|---|---|
 | `teacher.json` | Server address, login token, saved classrooms (**including passwords**), subjects taught (default + per class), and the "accept untrusted TLS connections" switch | **Yes** |
+| `teacher-ipc.json` | Development teacher IPC switch and independent token; legacy teacher-extensions.json is retained | **Yes** |
+| `teacher-plugins.json` | Development teacher plugin registrations and enabled state | No |
 | `teacher-display.json` | The display parameters used last time | No |
 | `teacher-schedule.json` | Local scheduled shouts (pending + recently processed) | No |
 | `schedule-audio/` | WAV files for local scheduled voice (deleted once sent or cancelled) | No |
