@@ -52,6 +52,12 @@ the teacher shouts something new, the previous one stops.
 > and the plugin uses it to decide what to put on the mask. Older plugin versions don't know
 > it and treat it as a text shout — which doesn't stop the shout from being received.
 
+## Bridge diagnostics
+
+From plugin **1.1.1.0**, run `curl.exe --noproxy "*" http://127.0.0.1:45902/health` on the classroom computer to check the plugin version, notification-provider readiness and supported endpoints. No profile information is returned. `ready` does not confirm that a particular message was displayed.
+
+Only loopback Host values are accepted, and requests carrying Origin are rejected. Request bodies are limited to 64 KiB, with at most 16 concurrent connections and a five-second connection deadline. Native classroom clients need no changes; bypass proxies for the local endpoint. Other local processes can still access it: loopback listening is not user authentication.
+
 ## Sending after a class starts or ends
 
 Requires the ClassShout bridge plugin **1.1.0.0 or later**. ClassIsland loads the active profile for today. The classroom app reads its current timetable every five seconds and shares a summary through the relay with authorized teachers, without uploading the profile's attached settings.
