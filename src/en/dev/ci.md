@@ -92,9 +92,9 @@ because "the tag already exists".
 
 ## Android signing
 
-There is no keystore on a runner, so the APK is signed with .NET Android's **debug key**: it can be
-sideloaded with `adb install`, but it is **not acceptable for an app store**.
-Shipping to a store means signing it yourself — this pipeline does not do that.
+The 1.21.0 pipeline used a .NET Android debug key generated on the Runner. Sideloading works, but different builds may use different keys, preventing in-place upgrades.
+
+The development version reuses one persistent keystore across Android ABIs and releases. Android supports a freely generated self-signed certificate; a paid Windows code-signing certificate is unnecessary. Debug signing is suitable for tests, but a common password does not imply an identical private key. Do not regenerate it on every build or use a publicly shared test private key as the release identity. Updates require the same signing identity; see the [official Android signing guide](https://developer.android.com/studio/publish/app-signing).
 
 ## Pitfalls
 
@@ -115,22 +115,24 @@ looks the way it does today:
 
 ## What has to be configured
 
-The following signing flow belongs to this development version and was not used for the 1.21.0 release. Official publishing still needs GITHUB_TOKEN with contents: write, plus these repository Actions Secrets:
+The following signing flow belongs to this development version and was not used for the 1.21.0 release. Official publishing still needs GITHUB_TOKEN with contents: write. The four Android Actions Secrets below are required; the two Windows Secrets are optional:
 
 | Secret | Value |
 |---|---|
-| WINDOWS_SIGNING_PFX_BASE64 | Base64 Windows code-signing PFX including private key and chain |
-| WINDOWS_SIGNING_PASSWORD | PFX password |
+| WINDOWS_SIGNING_PFX_BASE64 | Optional: Base64 Windows code-signing PFX including private key and chain |
+| WINDOWS_SIGNING_PASSWORD | Optional: PFX password; configure both Windows entries or neither |
 | ANDROID_SIGNING_KEYSTORE_BASE64 | Base64 persistent Android keystore |
 | ANDROID_SIGNING_KEY_ALIAS | Signing key alias |
 | ANDROID_SIGNING_STORE_PASSWORD | Keystore password |
 | ANDROID_SIGNING_KEY_PASSWORD | Alias private-key password |
 
-Real signing material is not configured yet, so the successful official-signing path remains unverified. Never commit private keys or passwords to source, notes or logs. This PFX integration requires an exportable private key; hardware/cloud certificates need their signing provider integrated separately.
+A persistent release keystore is not configured yet; actual publishing still requires the four Android Secrets. Use JDK keytool to generate an RSA self-signed keystore once, back it up, and save that same file's Base64, alias and passwords in Secrets. Do not regenerate it at the start of each CI run. Never commit private keys or passwords to source, notes or logs. Optional PFX signing requires an exportable private key; hardware/cloud certificates need their signing provider integrated separately.
 
 ## Unified signing order
 
-Windows portable files, installer payloads and installers use the same code-signing certificate. Owned ClassShout exe/dll files are signed before archiving and verified for identity, trust and SHA-256 timestamps; third-party runtimes are not re-signed. Every Android ABI uses the same persistent keystore; apksigner checks its certificate digest against that keystore and rejects Android Debug certificates. Platforms use their appropriate signature formats rather than pretending one temporary certificate is a cross-platform release identity.
+Every Android ABI uses the same persistent keystore, and apksigner verifies its certificate digest. Freely generated self-signed release keys are supported; Android Debug certificates are not accepted as official release identities.
+
+Without a Windows certificate, desktop packaging proceeds with an explicit notice that Authenticode signing is disabled; Android publishing is unaffected. If configured, Windows portable files, installer payloads and installers use the same certificate. Owned ClassShout exe/dll files are signed before archiving and verified for identity, trust and SHA-256 timestamps; third-party runtimes are not re-signed.
 
 ZIPs/installers and SHA256SUMS are finalized after signing. Linux archives retain checksum verification; SHA-256 checksums are not publisher digital signatures. Experimental macOS artifacts remain unsigned and outside the official release assets.
 
@@ -138,8 +140,8 @@ Keys are decoded only into a restricted Runner temporary directory. Passwords us
 
 ## Missing material and validation
 
-Official packing uses scripts/pack.ps1 -RequireSigning. Any missing signing item fails before packaging; temporary/debug identities are never automatically substituted. An entirely unconfigured manual run may produce unsigned development assets only when both dry_run and allow_unsigned_dry_run are selected; it never creates a release. Partially configured material still fails to prevent mixed identities.
+Official packing uses scripts/pack.ps1 -RequireSigning, requiring a persistent Android key rather than a Windows certificate. With -SkipAndroid, Android material is unnecessary. Missing Android entries or a partially configured optional Windows pair fail before packaging. An entirely unconfigured manual run may produce development assets without persistent signing only when both dry_run and allow_unsigned_dry_run are selected; it never creates a release.
 
 Moving from previous temporary Android signing to a fixed key generally prevents in-place installation. Incrementing versionCode cannot resolve certificate mismatch. If the old private key cannot be recovered, retain migratable settings, uninstall/reinstall and sign in again; a new keystore cannot restore the old identity. Back up and reuse the same keystore thereafter.
 
-Syntax, YAML, missing-material rejection, explicit unsigned dry-runs and cleanup path boundaries can be checked locally. A trusted Windows signature and persistent-keystore release must be validated after Secrets are configured.
+Syntax, YAML, Android-only configuration, missing-material rejection, explicit development dry-runs and cleanup boundaries can be checked locally. Persistent-keystore publishing requires Secrets to be configured; trusted Windows signing is validated only if the optional certificate is enabled.

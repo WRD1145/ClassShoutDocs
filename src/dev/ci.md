@@ -88,9 +88,9 @@ version（读版本号、找发布说明、查这个标签发过没有）
 
 ## Android 的签名
 
-runner 上没有 keystore，所以打出来的 APK 用的是 .NET Android 的 **debug 密钥**：
-能 `adb install` / 侧载，但**不能拿去上架应用商店**。
-要在商店发，得自己签 —— 这条流水线不做这件事。
+1.21.0 的流水线使用 Runner 上生成的 .NET Android debug 密钥，可侧载，但不同构建的密钥可能不同，不能保证覆盖升级。
+
+开发版改为所有 Android ABI、所有版本复用一个固定 keystore。Android 可以使用免费自行生成的自签名证书，无需购买 Windows 代码签名证书。测试时可以用调试签名，但通用密码不等于同一把私钥；不要每次构建重新生成，也不要把公开的通用测试私钥当成发行身份。覆盖升级要求复用相同签名身份，详见 [Android 官方签名说明](https://developer.android.com/studio/publish/app-signing)。
 
 ## 踩过的坑
 
@@ -108,22 +108,24 @@ runner 上没有 keystore，所以打出来的 APK 用的是 .NET Android 的 **
 
 ## 需要配什么
 
-以下为本次开发版的新签名流程，1.21.0 发布时尚未采用。正式发行仍使用 GITHUB_TOKEN 的 contents: write 权限，同时需要在仓库 Actions Secrets 中配置：
+以下为本次开发版的新签名流程，1.21.0 发布时尚未采用。正式发行仍使用 GITHUB_TOKEN 的 contents: write 权限；Android 需要以下四项 Actions Secrets，Windows 两项为可选配置：
 
 | Secret | 内容 |
 |---|---|
-| WINDOWS_SIGNING_PFX_BASE64 | 含私钥及证书链的 Windows 代码签名 PFX，以 Base64 保存 |
-| WINDOWS_SIGNING_PASSWORD | PFX 密码 |
+| WINDOWS_SIGNING_PFX_BASE64 | 可选：含私钥及证书链的 Windows 代码签名 PFX，以 Base64 保存 |
+| WINDOWS_SIGNING_PASSWORD | 可选：PFX 密码，与 PFX 同时配置或同时留空 |
 | ANDROID_SIGNING_KEYSTORE_BASE64 | 持久 Android keystore 的 Base64 |
 | ANDROID_SIGNING_KEY_ALIAS | 签名 key alias |
 | ANDROID_SIGNING_STORE_PASSWORD | keystore 密码 |
 | ANDROID_SIGNING_KEY_PASSWORD | alias 私钥密码 |
 
-当前尚未配置真实签名材料，因此正式签名的正向流水线还不能验收。请勿把私钥或密码提交进仓库、发布说明或日志。PFX 方案要求可导出的私钥；硬件或云签名证书需另接相应签名提供程序。
+当前尚未配置发行用的固定 keystore，真实发布仍需配置这四项 Android Secrets。可用 JDK 的 keytool 一次性生成 RSA 自签名 keystore，长期备份，再把同一文件的 Base64、alias 和密码保存到 Secrets；不要在每次 CI 开始时重新生成。请勿把私钥或密码提交进仓库、发布说明或日志。可选 PFX 方案要求可导出的私钥；硬件或云签名证书需另接相应签名提供程序。
 
 ## 统一签名顺序
 
-Windows 便携目录、安装程序内部文件和安装程序本身统一用同一代码签名证书签名；自有 ClassShout exe / dll 在压缩前签名并校验身份、证书信任和 SHA-256 时间戳，不重新签名第三方运行时。Android 所有 ABI 包使用同一个固定 keystore，并通过 apksigner 验证证书指纹与 keystore 一致，拒绝 Android Debug 证书。两平台使用各自适用的签名格式，不把一个临时证书当成跨平台正式身份。
+Android 所有 ABI 包使用同一个固定 keystore，并通过 apksigner 验证证书指纹与 keystore 一致；免费自签名的发行密钥受支持，Android Debug 证书不作为正式发行身份。
+
+Windows 未配置证书时照常打包，明确标记未做 Authenticode 签名，不影响 Android 发布；配置证书后，便携目录、安装程序内部文件和安装程序本身统一用它签名。自有 ClassShout exe / dll 在压缩前签名并校验身份、证书信任和 SHA-256 时间戳，不重新签名第三方运行时。
 
 签名完成后才生成 ZIP / 安装程序和 SHA256SUMS。Linux 包仍使用附件校验清单；SHA-256 校验不是发布者数字签名。macOS 试验产物仍未签名，不进入正式发行附件。
 
@@ -131,8 +133,8 @@ Windows 便携目录、安装程序内部文件和安装程序本身统一用同
 
 ## 缺失材料与验收
 
-正式打包使用 scripts/pack.ps1 -RequireSigning。缺少任一签名项会在开始打包前失败，不自动生成或退回临时 / 调试身份。只有手动运行同时选择 dry_run 与 allow_unsigned_dry_run，且完全未配置材料时，才允许未签名的开发验收包；它不会创建发行版。配置了一部分材料仍会失败，避免混签。
+正式打包使用 scripts/pack.ps1 -RequireSigning，要求 Android 固定签名，不要求 Windows 证书；使用 -SkipAndroid 时不要求 Android 材料。缺少 Android 必需项或 Windows 可选项只配置了一半，都会在开始打包前失败。只有手动运行同时选择 dry_run 与 allow_unsigned_dry_run，且完全未配置材料时，才允许未固定签名的开发验收包；它不会创建发行版。
 
 从前面的临时 Android 签名切换至固定签名时，已有 APK 通常不能直接覆盖安装，versionCode 递增也不能消除签名不一致。若旧私钥无法恢复，需保留可迁移配置、卸载重装并重新登录；不要误以为新 keystore 能恢复旧身份。此后应长期备份和复用同一 keystore。
 
-脚本语法、YAML、缺失材料拒绝、显式未签名 dry-run 与清理路径边界可在本地验证；受信任 Windows 签名和持久 keystore 的真实发行验收必须待配置 Secrets 后完成。
+脚本语法、YAML、Android 单独配置、缺失材料拒绝、显式验收 dry-run 与清理路径边界可在本地验证；持久 keystore 的真实发行验收须待配置 Secrets 后完成，受信任 Windows 签名只在启用可选证书后验证。
