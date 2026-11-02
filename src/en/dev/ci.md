@@ -147,7 +147,7 @@ pwsh -NoProfile -File scripts/pack.ps1 -Configuration Release -IncludeLinuxServe
 
 Every Android ABI uses the same persistent keystore, and apksigner verifies its certificate digest. Freely generated self-signed release keys are supported; Android Debug certificates are not accepted as official release identities.
 
-Verification accepts both Signer #1 and v3.1 SDK-range certificate output. Every range must match the fixed keystore, and the tool must report one signer. Verification errors, unknown formats or another identity in any range block publishing. Failure logs show only public certificate fingerprints; the APK is retained briefly for diagnosis without uploading private-key files.
+Verification accepts Signer #1, v3.1 SDK-range output and Build-tools 37 scheme prefixes such as V3.0 Signer. Every range and scheme must match the fixed keystore, and the tool must report one signer. Verification errors, unknown formats or another identity in any range block publishing. Failure logs show only public certificate fingerprints; the APK is retained briefly for diagnosis without uploading private-key files.
 
 Without a Windows certificate, desktop packaging proceeds with an explicit notice that Authenticode signing is disabled; Android publishing is unaffected. If configured, Windows portable files, installer payloads and installers use the same certificate. Owned ClassShout exe/dll files are signed before archiving and verified for identity, trust and SHA-256 timestamps; third-party runtimes are not re-signed.
 
