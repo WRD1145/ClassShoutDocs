@@ -140,6 +140,8 @@ pwsh -NoProfile -File scripts/pack.ps1 -Configuration Release -IncludeLinuxServe
 
 Android 所有 ABI 包使用同一个固定 keystore，并通过 apksigner 验证证书指纹与 keystore 一致；免费自签名的发行密钥受支持，Android Debug 证书不作为正式发行身份。
 
+校验同时支持 Signer #1 和 v3.1 的 SDK 范围证书输出；所有范围的证书必须匹配固定 keystore，且工具报告一个签名者。工具验证失败、未知格式或任一区间换用其他身份都会阻止发布。失败日志仅报告公钥证书指纹，并短期保留待核查的 APK，不上传私钥文件。
+
 Windows 未配置证书时照常打包，明确标记未做 Authenticode 签名，不影响 Android 发布；配置证书后，便携目录、安装程序内部文件和安装程序本身统一用它签名。自有 ClassShout exe / dll 在压缩前签名并校验身份、证书信任和 SHA-256 时间戳，不重新签名第三方运行时。
 
 签名完成后才生成 ZIP / 安装程序和 SHA256SUMS。Linux 包仍使用附件校验清单；SHA-256 校验不是发布者数字签名。macOS 试验产物仍未签名，不进入正式发行附件。
