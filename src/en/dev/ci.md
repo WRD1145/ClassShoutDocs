@@ -128,6 +128,19 @@ The following signing flow belongs to this development version and was not used 
 
 A persistent release keystore is not configured yet; actual publishing still requires the four Android Secrets. Use JDK keytool to generate an RSA self-signed keystore once, back it up, and save that same file's Base64, alias and passwords in Secrets. Do not regenerate it at the start of each CI run. Never commit private keys or passwords to source, notes or logs. Optional PFX signing requires an exportable private key; hardware/cloud certificates need their signing provider integrated separately.
 
+The preparation step reads ANDROID_SIGNING_KEYSTORE_BASE64, decodes it into a restricted Runner temporary directory, and exports ANDROID_SIGNING_KEYSTORE_PATH through GITHUB_ENV. The packing step uses the same alias and password environment-variable names as the Secrets, without alternate shortened names. MSBuild receives AndroidSigningStorePass=env:ANDROID_SIGNING_STORE_PASSWORD and AndroidSigningKeyPass=env:ANDROID_SIGNING_KEY_PASSWORD, referencing variable names rather than literal passwords.
+
+Local packaging uses the same variables. Assuming the signing files are stored in the directory below, read the local files in PowerShell before invoking the pack command; do not replace passwords with command-line literals:
+
+```powershell
+$signingDir = 'D:\安全备份\ClassShout'
+$env:ANDROID_SIGNING_KEYSTORE_PATH = Join-Path $signingDir 'classshout-release.keystore'
+$env:ANDROID_SIGNING_KEY_ALIAS = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_KEY_ALIAS.txt') -Raw).Trim()
+$env:ANDROID_SIGNING_STORE_PASSWORD = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_STORE_PASSWORD.txt') -Raw).Trim()
+$env:ANDROID_SIGNING_KEY_PASSWORD = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_KEY_PASSWORD.txt') -Raw).Trim()
+pwsh -NoProfile -File scripts/pack.ps1 -Configuration Release -IncludeLinuxServer -Installer -RequireSigning
+```
+
 ## Unified signing order
 
 Every Android ABI uses the same persistent keystore, and apksigner verifies its certificate digest. Freely generated self-signed release keys are supported; Android Debug certificates are not accepted as official release identities.

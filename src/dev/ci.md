@@ -121,6 +121,19 @@ version（读版本号、找发布说明、查这个标签发过没有）
 
 当前尚未配置发行用的固定 keystore，真实发布仍需配置这四项 Android Secrets。可用 JDK 的 keytool 一次性生成 RSA 自签名 keystore，长期备份，再把同一文件的 Base64、alias 和密码保存到 Secrets；不要在每次 CI 开始时重新生成。请勿把私钥或密码提交进仓库、发布说明或日志。可选 PFX 方案要求可导出的私钥；硬件或云签名证书需另接相应签名提供程序。
 
+准备步骤读取 ANDROID_SIGNING_KEYSTORE_BASE64，将文件解码到受限 Runner 临时目录，并通过 GITHUB_ENV 传递 ANDROID_SIGNING_KEYSTORE_PATH。打包步骤的 alias 和两个密码环境变量与 Secrets 同名，不再另用缩写变量名。MSBuild 使用 AndroidSigningStorePass=env:ANDROID_SIGNING_STORE_PASSWORD 与 AndroidSigningKeyPass=env:ANDROID_SIGNING_KEY_PASSWORD，只传变量名。
+
+本地打包也使用相同变量。假设签名材料保存在以下目录，先在 PowerShell 中读取本地文件，再调用打包命令；不要把密码替换成命令行字面值：
+
+```powershell
+$signingDir = 'D:\安全备份\ClassShout'
+$env:ANDROID_SIGNING_KEYSTORE_PATH = Join-Path $signingDir 'classshout-release.keystore'
+$env:ANDROID_SIGNING_KEY_ALIAS = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_KEY_ALIAS.txt') -Raw).Trim()
+$env:ANDROID_SIGNING_STORE_PASSWORD = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_STORE_PASSWORD.txt') -Raw).Trim()
+$env:ANDROID_SIGNING_KEY_PASSWORD = (Get-Content (Join-Path $signingDir 'ANDROID_SIGNING_KEY_PASSWORD.txt') -Raw).Trim()
+pwsh -NoProfile -File scripts/pack.ps1 -Configuration Release -IncludeLinuxServer -Installer -RequireSigning
+```
+
 ## 统一签名顺序
 
 Android 所有 ABI 包使用同一个固定 keystore，并通过 apksigner 验证证书指纹与 keystore 一致；免费自签名的发行密钥受支持，Android Debug 证书不作为正式发行身份。
