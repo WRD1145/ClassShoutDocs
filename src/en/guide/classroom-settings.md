@@ -125,7 +125,7 @@ Version 1.22.0 and later has a separate local IPC card and classroom-ipc.json. I
 
 ## Plugin management
 
-The development version moves plugins into a separate Plugins tab in Settings, removing the expanded list from General. This navigation change is not included in 1.22.0. Unlock protected settings in General first. Switching tabs or closing Settings neither stops/restarts plugins nor changes IPC.
+Version 1.23.0 moves plugins into a separate Plugins tab in Settings, removing the expanded list from General. Unlock protected settings in General first. Switching tabs or closing Settings neither stops/restarts plugins nor changes IPC.
 
 Version 1.22.0 and later separately manages local packages, search, details, enable/disable, restart and uninstall. New plugins use DI and independent assembly load contexts without enabling IPC; installation defaults to disabled. Registration uses classroom-plugins.json. See [Plugin development](/en/dev/plugins.html) for the SDK, manifest and example. Enable trusted code only; assembly isolation is not a security sandbox.
 

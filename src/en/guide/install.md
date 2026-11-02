@@ -78,7 +78,7 @@ The content is identical (self-contained; the target machine needs no .NET). Wha
 
 ### Using the installer (recommended for classrooms)
 
-Installers from 1.22.0 and earlier ask for a directory and launch preference in a console (Enter uses `%LOCALAPPDATA%\ClassShout\app`). The graphical maintenance flow below is new in the development version and is not included in the 1.22.0 release assets.
+Installers from 1.22.0 and earlier ask for a directory and launch preference in a console (Enter uses `%LOCALAPPDATA%\ClassShout\app`). The graphical maintenance flow below is available starting with 1.23.0.
 **No administrator rights needed**: it installs under the current user, and uninstalling goes through
 Settings → Apps → Installed apps.
 
@@ -88,7 +88,7 @@ Settings → Apps → Installed apps.
   shortcuts but **keeps settings** (those live in the per-user config directory; delete `%LOCALAPPDATA%\ClassShout` to wipe them).
 - There is no code-signing certificate, so the first run shows a SmartScreen warning: More info → Run anyway.
 
-### Graphical installation and maintenance (development version)
+### Graphical installation and maintenance (1.23.0+)
 
 Double-click the installer to open a graphical window, select a local directory and action, then use the primary button. Progress, detailed logs and errors stay visible, with an option to launch afterwards. Existing instances in that directory are closed only after confirmation.
 

@@ -62,13 +62,13 @@ carrying the recognized words. See
 
 ## Teacher local IPC
 
-The development desktop teacher Devices page provides its own IPC card, teacher-ipc.json and 127.0.0.1:45904. Calls send to the currently connected classroom and explicitly reject disconnected sends. Its credentials are independent from classroom IPC; legacy teacher-extensions.json is migrated. See the separate [IPC API documentation](/en/reference/ipc.html) for routes and OpenAPI.
+The desktop teacher Devices page (1.22.0+) provides its own IPC card, teacher-ipc.json and 127.0.0.1:45904. Calls send to the currently connected classroom and explicitly reject disconnected sends. Its credentials are independent from classroom IPC; legacy teacher-extensions.json is migrated. See the separate [IPC API documentation](/en/reference/ipc.html) for routes and OpenAPI.
 
 ## Teacher plugin management
 
-The development version opens a separate plugin settings page from Devices → Manage plugins, with a Back to device settings button. This navigation change is not included in 1.22.0. It uses the existing teacher plugin manager, so navigation does not reload plugins. Android does not show this desktop entry.
+Version 1.23.0 opens a separate plugin settings page from Devices → Manage plugins, with a Back to device settings button. It uses the existing teacher plugin manager, so navigation does not reload plugins. Android does not show this desktop entry.
 
-The development plugin card provides installed entries, search, details, local package installation, enable/disable, restart and uninstall, using teacher-plugins.json. New DLL plugins receive typed host services through DI and own an independent load context and service scope. They do not depend on IPC being enabled. Android does not load desktop plugins. See [Plugin development](/en/dev/plugins.html).
+The plugin page provides installed entries, search, details, local package installation, enable/disable, restart and uninstall, using teacher-plugins.json. New DLL plugins receive typed host services through DI and own an independent load context and service scope. They do not depend on IPC being enabled. Android does not load desktop plugins. See [Plugin development](/en/dev/plugins.html).
 
 ## Delivery receipts
 

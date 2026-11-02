@@ -10,7 +10,7 @@ New plugins do not start an HTTP server, need an IPC token or use JSONL to call 
 
 ## Management and packages
 
-The development version adds dedicated settings pages: Settings → Plugins in the classroom app and Devices → Manage plugins in the teacher app, with return navigation. This page change is not included in 1.22.0. The same manager instance remains active across navigation, and classroom PIN protection still applies.
+Version 1.23.0 adds dedicated settings pages: Settings → Plugins in the classroom app and Devices → Manage plugins in the teacher app, with return navigation. The same manager instance remains active across navigation, and classroom PIN protection still applies.
 
 Plugin management provides an installed list, search by name/author/ID, details, local installation, enable, disable, restart and uninstall. Review the manifest and permissions before confirming installation. Packages are disabled initially and assemblies load only on enable. This version supports local `.cspx` / `.zip` files, without an online marketplace.
 
