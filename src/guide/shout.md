@@ -50,11 +50,11 @@
 
 ## 教师端本机 IPC
 
-开发版桌面教师端的「设备」页提供独立 IPC 卡片，使用 teacher-ipc.json 和 127.0.0.1:45904。接口向当前连接教室发送，未连接明确拒绝。令牌与教室端独立；旧 teacher-extensions.json 自动迁移。完整路由与 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。
+1.22.0 起桌面教师端的「设备」页提供独立 IPC 卡片，使用 teacher-ipc.json 和 127.0.0.1:45904。接口向当前连接教室发送，未连接明确拒绝。令牌与教室端独立；旧 teacher-extensions.json 自动迁移。完整路由与 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。
 
 ## 教师端插件管理
 
-开发版的插件卡片提供已安装列表、搜索、详情、本地包安装、启停、重启和卸载，配置为 teacher-plugins.json。新 DLL 插件通过 DI 获取类型化宿主服务，每个插件拥有独立加载上下文及服务作用域。它不依赖 IPC 开关；Android 暂不加载桌面插件。开发示例和管理规则见[插件开发](/dev/plugins.html)。
+1.22.0 起的插件卡片提供已安装列表、搜索、详情、本地包安装、启停、重启和卸载，配置为 teacher-plugins.json。新 DLL 插件通过 DI 获取类型化宿主服务，每个插件拥有独立加载上下文及服务作用域。它不依赖 IPC 开关；Android 暂不加载桌面插件。开发示例和管理规则见[插件开发](/dev/plugins.html)。
 
 ## 送达回执
 

@@ -101,11 +101,11 @@
 
 ## 本机 IPC
 
-开发版提供独立「本机 IPC」卡片，配置位于 classroom-ipc.json，监听 127.0.0.1:45903，默认关闭并要求令牌。外部应用的路由、鉴权和 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。旧版 extensions.json 会保留并自动迁移，已有令牌不变。
+1.22.0 起提供独立「本机 IPC」卡片，配置位于 classroom-ipc.json，监听 127.0.0.1:45903，默认关闭并要求令牌。外部应用的路由、鉴权和 OpenAPI 见[IPC 接口文档](/reference/ipc.html)。旧版 extensions.json 会保留并自动迁移，已有令牌不变。
 
 ## 插件管理
 
-开发版将插件独立管理，支持本地包安装、搜索、详情、启停、重启与卸载。新插件使用 DI 和独立程序集加载上下文，不需要开启 IPC；安装后默认禁用。配置位于 classroom-plugins.json。SDK、清单和示例见[插件开发](/dev/plugins.html)。仅启用可信代码；程序集隔离不是安全沙箱。
+1.22.0 起将插件独立管理，支持本地包安装、搜索、详情、启停、重启与卸载。新插件使用 DI 和独立程序集加载上下文，不需要开启 IPC；安装后默认禁用。配置位于 classroom-plugins.json。SDK、清单和示例见[插件开发](/dev/plugins.html)。仅启用可信代码；程序集隔离不是安全沙箱。
 
 ## 本地铃声
 

@@ -1,6 +1,6 @@
 # Plugin development
 
-The management UI and SDK below target this development version and are not part of the published 1.21.0 build. Plugins use **Microsoft.Extensions.DependencyInjection and an independent AssemblyLoadContext**. External HTTP integrations have separate [IPC API documentation](/en/reference/ipc.html).
+The management UI and SDK below are available from 1.22.0 and are not part of the published 1.21.0 build. Plugins use **Microsoft.Extensions.DependencyInjection and an independent AssemblyLoadContext**. External HTTP integrations have separate [IPC API documentation](/en/reference/ipc.html).
 
 ## Version and scope
 

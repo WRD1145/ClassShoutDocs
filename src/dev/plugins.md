@@ -1,6 +1,6 @@
 # 插件开发
 
-以下管理和 SDK 适用于本次开发版本，尚未随 1.21.0 发布。插件采用 **Microsoft.Extensions.DependencyInjection + 独立 AssemblyLoadContext**；外部程序使用的 HTTP 接口另见 [IPC 接口文档](/reference/ipc.html)。
+以下管理和 SDK 从 1.22.0 起提供，1.21.0 不含这些管理功能和 SDK。插件采用 **Microsoft.Extensions.DependencyInjection + 独立 AssemblyLoadContext**；外部程序使用的 HTTP 接口另见 [IPC 接口文档](/reference/ipc.html)。
 
 ## 版本与边界
 

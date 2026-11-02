@@ -9,7 +9,7 @@ This page covers HTTP IPC for external programs only. [Plugin development](/en/d
 | Classroom | http://127.0.0.1:45903 | classroom-ipc.json | extensions.json |
 | Desktop teacher | http://127.0.0.1:45904 | teacher-ipc.json | teacher-extensions.json |
 
-The development version separates IPC/plugin configuration and lifecycle and migrates existing tokens and switches. Ports, HTTP routes and response schemas remain compatible with 1.21.0. Android does not expose desktop IPC. Use the directory shown in Settings; Windows defaults to `%LOCALAPPDATA%\ClassShout`, overridden by CLASSSHOUT_DATA_DIR.
+Version 1.22.0 and later separates IPC/plugin configuration and lifecycle and migrates existing tokens and switches. Ports, HTTP routes and response schemas remain compatible with 1.21.0. Android does not expose desktop IPC. Use the directory shown in Settings; Windows defaults to `%LOCALAPPDATA%\ClassShout`, overridden by CLASSSHOUT_DATA_DIR.
 
 Enable IPC and save in its own settings card. It defaults to disabled and listens on loopback only; it is not a public or browser API. Applying IPC settings does not restart plugins.
 

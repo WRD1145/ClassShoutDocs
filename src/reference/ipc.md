@@ -4,12 +4,12 @@
 
 ## 地址与配置
 
-| 端 | 地址 | 当前开发版配置 | 1.21.0 旧配置 |
+| 端 | 地址 | 当前1.22.0 起配置 | 1.21.0 旧配置 |
 |---|---|---|---|
 | 教室端 | http://127.0.0.1:45903 | classroom-ipc.json | extensions.json |
 | 桌面教师端 | http://127.0.0.1:45904 | teacher-ipc.json | teacher-extensions.json |
 
-开发版已将 IPC 与插件配置、启停分开，旧版升级自动保留令牌和开关。本文端口、HTTP 路由和响应格式兼容 1.21.0。Android 不开放桌面 IPC。目录以设置界面显示为准，Windows 默认 `%LOCALAPPDATA%\ClassShout`，可用 CLASSSHOUT_DATA_DIR 覆盖。
+1.22.0 起已将 IPC 与插件配置、启停分开，旧版升级自动保留令牌和开关。本文端口、HTTP 路由和响应格式兼容 1.21.0。Android 不开放桌面 IPC。目录以设置界面显示为准，Windows 默认 `%LOCALAPPDATA%\ClassShout`，可用 CLASSSHOUT_DATA_DIR 覆盖。
 
 在「本机 IPC」中开启并保存 IPC 设置。默认关闭，只监听回环，不是公网或浏览器 API；保存 IPC 不会重启插件。
 

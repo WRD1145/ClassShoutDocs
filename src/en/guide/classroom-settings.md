@@ -121,11 +121,11 @@ Each request allows 30 seconds, 10000 text characters and an 8 MiB response. Exi
 
 ## Local IPC
 
-The development version has a separate local IPC card and classroom-ipc.json. It listens on 127.0.0.1:45903, defaults to disabled and requires a token. See the standalone [IPC API documentation](/en/reference/ipc.html) for authentication, routes and OpenAPI. Legacy extensions.json is retained and migrated without changing credentials.
+Version 1.22.0 and later has a separate local IPC card and classroom-ipc.json. It listens on 127.0.0.1:45903, defaults to disabled and requires a token. See the standalone [IPC API documentation](/en/reference/ipc.html) for authentication, routes and OpenAPI. Legacy extensions.json is retained and migrated without changing credentials.
 
 ## Plugin management
 
-The development version separately manages local packages, search, details, enable/disable, restart and uninstall. New plugins use DI and independent assembly load contexts without enabling IPC; installation defaults to disabled. Registration uses classroom-plugins.json. See [Plugin development](/en/dev/plugins.html) for the SDK, manifest and example. Enable trusted code only; assembly isolation is not a security sandbox.
+Version 1.22.0 and later separately manages local packages, search, details, enable/disable, restart and uninstall. New plugins use DI and independent assembly load contexts without enabling IPC; installation defaults to disabled. Registration uses classroom-plugins.json. See [Plugin development](/en/dev/plugins.html) for the SDK, manifest and example. Enable trusted code only; assembly isolation is not a security sandbox.
 
 ## Local bells
 

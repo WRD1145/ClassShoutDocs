@@ -92,6 +92,8 @@ because "the tag already exists".
 
 ## Android signing
 
+Starting with 1.22.0, Actions passes the selected version through CLASSSHOUT_RELEASE_VERSION and pack.ps1 -ReleaseVersion to every Windows, Linux, Android and installer publish. Experimental macOS builds also receive Version. The build generates a C# version constant, so displayed versions do not depend on entry-assembly reflection. Missing or invalid versions fail instead of producing 0.0.0 assets. Android's integer versionCode is still incremented separately rather than concatenated from the semantic version.
+
 The 1.21.0 pipeline used a .NET Android debug key generated on the Runner. Sideloading works, but different builds may use different keys, preventing in-place upgrades.
 
 The development version reuses one persistent keystore across Android ABIs and releases. Android supports a freely generated self-signed certificate; a paid Windows code-signing certificate is unnecessary. Debug signing is suitable for tests, but a common password does not imply an identical private key. Do not regenerate it on every build or use a publicly shared test private key as the release identity. Updates require the same signing identity; see the [official Android signing guide](https://developer.android.com/studio/publish/app-signing).

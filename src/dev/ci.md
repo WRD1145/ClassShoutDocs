@@ -88,6 +88,8 @@ version（读版本号、找发布说明、查这个标签发过没有）
 
 ## Android 的签名
 
+从 1.22.0 起，Actions 将判定的版本通过 CLASSSHOUT_RELEASE_VERSION 和 pack.ps1 的 -ReleaseVersion 显式传入每一次发布，包含 Windows、Linux、Android 与安装程序；macOS 试验构建同样传入 Version。构建时将版本写成 C# 常量，客户端显示版本不依赖入口程序集反射。无效或缺失版本直接失败，不生成 0.0.0 产物。Android 的整数 versionCode 仍单独递增，不从语义版本拼接。
+
 1.21.0 的流水线使用 Runner 上生成的 .NET Android debug 密钥，可侧载，但不同构建的密钥可能不同，不能保证覆盖升级。
 
 开发版改为所有 Android ABI、所有版本复用一个固定 keystore。Android 可以使用免费自行生成的自签名证书，无需购买 Windows 代码签名证书。测试时可以用调试签名，但通用密码不等于同一把私钥；不要每次构建重新生成，也不要把公开的通用测试私钥当成发行身份。覆盖升级要求复用相同签名身份，详见 [Android 官方签名说明](https://developer.android.com/studio/publish/app-signing)。
