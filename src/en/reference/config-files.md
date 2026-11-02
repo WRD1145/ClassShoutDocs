@@ -11,6 +11,8 @@ machine should have their own separate identities.
 
 ## Classroom app
 
+The development Windows GUI installer also stores `classshout-install.json` in the installation directory (app ownership, version and managed-file list), with a maintenance program cached under `%LOCALAPPDATA%\ClassShout\Maintenance\app\version\`. These are not user settings and are excluded from configuration backup import/export. Do not edit the installation list manually. Uninstall preserves settings, logs, personal files, the record and current maintenance cache.
+
 | File | Contents | Holds credentials |
 |---|---|---|
 | `classroom.json` | Classroom name, UUID, password, server address, the "connect on startup" switch, and the "accept untrusted TLS connections" switch | **Yes** (password) |

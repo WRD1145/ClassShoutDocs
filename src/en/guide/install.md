@@ -78,7 +78,7 @@ The content is identical (self-contained; the target machine needs no .NET). Wha
 
 ### Using the installer (recommended for classrooms)
 
-Run `setup.exe` → it asks where to install (press Enter for `%LOCALAPPDATA%\ClassShout\app`) → offers to start it.
+Installers from 1.22.0 and earlier ask for a directory and launch preference in a console (Enter uses `%LOCALAPPDATA%\ClassShout\app`). The graphical maintenance flow below is new in the development version and is not included in the 1.22.0 release assets.
 **No administrator rights needed**: it installs under the current user, and uninstalling goes through
 Settings → Apps → Installed apps.
 
@@ -87,6 +87,23 @@ Settings → Apps → Installed apps.
 - **Uninstall**: Settings → Apps → Installed apps, or the "卸载 …" entry in the Start menu. It removes the program and
   shortcuts but **keeps settings** (those live in the per-user config directory; delete `%LOCALAPPDATA%\ClassShout` to wipe them).
 - There is no code-signing certificate, so the first run shows a SmartScreen warning: More info → Run anyway.
+
+### Graphical installation and maintenance (development version)
+
+Double-click the installer to open a graphical window, select a local directory and action, then use the primary button. Progress, detailed logs and errors stay visible, with an option to launch afterwards. Existing instances in that directory are closed only after confirmation.
+
+| Detected state | Available actions |
+|---|---|
+| Not installed | Install |
+| Older version installed | Update, uninstall |
+| Same version installed | Update, repair, uninstall |
+| Newer version installed | Uninstall; older packages cannot overwrite it |
+
+Repair rewrites this version's files and restores missing files and shortcuts without clearing settings or logs. Uninstall requires confirmation and removes only managed program files and this app's shortcuts; settings, logs, personal files and the ownership record remain. The other app's Start menu entries are preserved. A new install refuses unrelated nonempty directories and linked paths.
+
+The maintenance package is cached under `%LOCALAPPDATA%\ClassShout\Maintenance\app\version\`. Windows uninstall and modify entries point to it rather than the app itself, and it can perform same-version repair. Updates attempt to clean unused older caches. The current package stays after uninstall for reinstallation; its app-specific cache can be removed afterwards if unnecessary. Keep it while the app remains installed so maintenance links continue to work.
+
+File-write failures trigger rollback attempts. Incomplete restoration is reported explicitly; close the app and run repair. Legacy installations receive corrected maintenance entries after one update or repair with the new installer. Automatic `/update /silent` remains supported; `/repair /silent /norestart` repairs silently without launching the app.
 
 ### Using the portable build
 

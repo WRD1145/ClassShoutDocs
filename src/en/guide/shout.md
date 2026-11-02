@@ -66,6 +66,8 @@ The development desktop teacher Devices page provides its own IPC card, teacher-
 
 ## Teacher plugin management
 
+The development version opens a separate plugin settings page from Devices → Manage plugins, with a Back to device settings button. This navigation change is not included in 1.22.0. It uses the existing teacher plugin manager, so navigation does not reload plugins. Android does not show this desktop entry.
+
 The development plugin card provides installed entries, search, details, local package installation, enable/disable, restart and uninstall, using teacher-plugins.json. New DLL plugins receive typed host services through DI and own an independent load context and service scope. They do not depend on IPC being enabled. Android does not load desktop plugins. See [Plugin development](/en/dev/plugins.html).
 
 ## Delivery receipts
