@@ -1,5 +1,9 @@
 # Shouts: text, voice, and quick phrases
 
+In Devices, the appearance settings offer interface font sizes of 100%, 115%, and 130%.
+
+On Windows, use the left sidebar to switch between Text, Voice, Students, Call, and Devices. The selected page opens on the right.
+
 ## Text shouts
 
 Type your content on the Text (文字) page → tap Send. The classroom reads it aloud

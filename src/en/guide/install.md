@@ -90,6 +90,10 @@ Settings → Apps → Installed apps.
 
 ### Graphical installation and maintenance (1.23.0+)
 
+Starting with four-part releases, the Windows teacher and classroom apps use the FluentAvalonia desktop theme. You can still choose the system theme, light mode, or dark mode in the app.
+
+Four-part numbering starts at 1.0.0.0. To upgrade from a three-part version, download the new Windows installer and run Update. The four parts track architecture changes, .NET upgrades, substantial feature releases, and small changes or fixes.
+
 Double-click the installer to open a graphical window, select a local directory and action, then use the primary button. Progress, detailed logs and errors stay visible, with an option to launch afterwards. Existing instances in that directory are closed only after confirmation.
 
 | Detected state | Available actions |
