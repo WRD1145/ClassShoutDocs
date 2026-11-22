@@ -90,7 +90,7 @@ Settings → Apps → Installed apps.
 
 ### Graphical installation and maintenance (1.23.0+)
 
-Starting with four-part releases, the Windows teacher and classroom apps use the FluentAvalonia desktop theme. You can still choose the system theme, light mode, or dark mode in the app.
+The Windows teacher and classroom apps and the Linux classroom app use the same FluentAvalonia desktop theme. You can still choose the system theme, light mode, or dark mode in the app. Desktop updates prefer `-update.zip` and restart the application; these contain full application files and runtime, rather than binary deltas. See [the Linux guide](/en/guide/linux.html) for AppImage and deb/rpm updates.
 
 Four-part numbering starts at 1.0.0.0. To upgrade from a three-part version, download the new Windows installer and run Update. The four parts track architecture changes, .NET upgrades, substantial feature releases, and small changes or fixes.
 
@@ -295,3 +295,5 @@ curl -s https://relay.example.com/api/health
 Binding a classroom starts a foreground receiver with the persistent text "ClassShout 正在接收教室消息", using the existing classroom replies notification channel. The service hosts the original relay poller. Pressing Home or dismissing the activity from recent tasks does not start a duplicate poller or stop reception. Logging out or explicitly unbinding stops the service.
 
 Allow notification permission. When Android recreates the receiver process, the service attempts to restore its saved session and cursor; expired server sessions require rebinding. Force-stop, shutdown, disconnection and manufacturer background restrictions can still interrupt reception. Server schedule outcomes also use this channel. Local schedules still require the application to be running.
+
+Windows also provides native ARM64 portable, installer, and update packages for Windows 11 ARM64. Choose the correct architecture. The universal Android APK already includes ARM64.

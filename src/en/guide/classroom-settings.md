@@ -2,7 +2,7 @@
 
 Under System and updates, choose an interface font size of 100%, 115%, or 130%. The change applies immediately and is saved for the next launch. Projected announcements have their own text size setting.
 
-In Windows, the left sidebar switches between General, Audio, Connection, Display and replies, System and updates, and Plugins. The right pane shows the selected category.
+On Windows/Linux, the left sidebar switches between General, Audio, Connection, Display and replies, System and updates, and Plugins. The right pane shows the selected category.
 
 The classroom app's settings live in a separate window (click the gear in the top-right corner). The screen
 in the classroom is there for the students to look at, so settings don't take over the main interface.
